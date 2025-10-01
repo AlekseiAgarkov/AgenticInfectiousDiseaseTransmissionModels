@@ -9,13 +9,7 @@ from pathlib import Path
 import simpy
 
 from models.sir import configure_simulation
-
-MSK = zoneinfo.ZoneInfo("Europe/Moscow")
-
-
-def msk_now_str():
-    return datetime.now(MSK).strftime("%Y-%m-%d-%H%M%SZ")
-
+from simulation_utils.time import msk_now_str
 
 if __name__ == '__main__':
     p = ArgumentParser()

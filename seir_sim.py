@@ -1,16 +1,15 @@
 import json
 import random
 import tomllib
-import zoneinfo
+
 from argparse import ArgumentParser
-from datetime import datetime
+
 from pathlib import Path
 
 import simpy
 
 from models.seir import configure_simulation
-
-MSK = zoneinfo.ZoneInfo("Europe/Moscow")
+from simulation_utils.time import msk_now_str
 
 
 def msk_now_str():
