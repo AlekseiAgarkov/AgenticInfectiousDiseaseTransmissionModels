@@ -22,7 +22,7 @@ class SIRBasicFSMAgent(BaseAgent):
 
         self.machine: Machine = Machine(model=self, states=self.states, initial=self.states[0])
         self.machine.add_transition(trigger="try_get_infected", source="susceptible", dest="infected", conditions="got_infected")
-        self.machine.add_transition(trigger="recover", source="infected", dest="recovered", conditions="got_recovered")
+        self.machine.add_transition(trigger="try_recover", source="infected", dest="recovered", conditions="got_recovered")
 
     def got_infected(self):
         return bool(np.random.binomial(n=1, p=self.beta))
@@ -37,7 +37,7 @@ class SIRBasicFSMAgent(BaseAgent):
                 yield self.env.timeout(1)
 
             if self.is_infected():
-                self.recover()
+                self.try_recover()
                 yield self.env.timeout(1)
 
             if self.is_recovered():
