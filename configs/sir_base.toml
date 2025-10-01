@@ -1,7 +1,7 @@
 title = "Base SIR Scenario"
 
 [simulator]
-name = 'SEIR_Simulation'
+name = 'SIR_Simulation'
 
 [paths]
 output_path = "simulation_data"
