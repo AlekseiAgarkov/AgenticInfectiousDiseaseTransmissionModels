@@ -55,7 +55,7 @@ if __name__ == '__main__':
         **AGENT_PARAMS
     }
 
-    logger = logging.getLogger("SEIR Simulator")
+    logger = logging.getLogger(SIMULATOR_NAME)
     logging.basicConfig(filename=f'{config['paths']['log_output']}/{SIMULATOR_NAME}_Log-{simulation_start_str}.log',
                         level=logging.INFO)
     logging.getLogger('transitions').setLevel(logging.ERROR)
