@@ -1,9 +1,10 @@
-from typing import List
+from typing import List, Dict
 
 import numpy as np
 import simpy
 from transitions import State, Machine
 
+from metrics.collector import MetricsCollector
 from models.agents import BaseAgent
 
 
@@ -68,3 +69,21 @@ class SEIRBasicFSMAgent(BaseAgent):
             if self.is_recovered():
                 till_end_of_simulation: int = (self.sim_duration - self.env.now) + 1
                 yield self.env.timeout(till_end_of_simulation)
+
+
+def configure_simulation(environment: simpy.Environment, agent_params: Dict, n_agents: int) -> MetricsCollector:
+    agents: Dict[int, SEIRBasicFSMAgent] = {
+        n: SEIRBasicFSMAgent(env=environment, name=f"A_{n}", **agent_params)
+        for n in range(n_agents)}
+
+    metrics: MetricsCollector = MetricsCollector(
+        env=environment,
+        entities=list(agents.values()),
+        states=SEIRBasicFSMAgent.states)
+
+    for a in agents.values():
+        environment.process(a.run())
+
+    environment.process(metrics.run())
+
+    return metrics
