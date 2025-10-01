@@ -1,7 +1,11 @@
 title = "Base SIR Scenario"
 
+[simulator]
+name = 'SEIR_Simulation'
+
 [paths]
 output_path = "simulation_data"
+log_output = "simulation_logs"
 
 [simulation]
 random_seed = 42

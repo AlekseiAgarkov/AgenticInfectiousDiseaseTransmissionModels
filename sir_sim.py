@@ -1,15 +1,14 @@
 import json
+import logging
 import random
 import tomllib
-import zoneinfo
 from argparse import ArgumentParser
-from datetime import datetime
 from pathlib import Path
 
 import simpy
 
 from models.sir import configure_simulation
-from simulation_utils.time import msk_now_str
+from simulation_utils.time import msk_now, DATETIME_FORMAT
 
 if __name__ == '__main__':
     p = ArgumentParser()
@@ -32,6 +31,11 @@ if __name__ == '__main__':
     if args.config_path is not None:
         config = tomllib.loads(Path(args.config_path).read_text(encoding="utf-8"))
 
+    simulation_start = msk_now()
+    simulation_start_str = simulation_start.strftime(DATETIME_FORMAT)
+
+    SIMULATOR_NAME = config['simulator']['name']
+
     RANDOM_SEED = args.random_seed or config['simulation']['random_seed']
     AGENT_PARAMS: dict = {
         "beta": args.beta or config['agents']['beta'],
@@ -51,13 +55,28 @@ if __name__ == '__main__':
         **AGENT_PARAMS
     }
 
+    logger = logging.getLogger("SEIR Simulator")
+    logging.basicConfig(filename=f'{config['paths']['log_output']}/{SIMULATOR_NAME}_Log-{simulation_start_str}.log',
+                        level=logging.INFO)
+    logging.getLogger('transitions').setLevel(logging.ERROR)
+    logger.info(f'Simulation has started with params: {simulation_params}')
+
     random.seed(RANDOM_SEED)
     env = simpy.Environment()
     metrics = configure_simulation(environment=env, agent_params=AGENT_PARAMS, n_agents=N_AGENTS)
     env.run(until=SIM_DURATION)
 
-    simulation_ts = msk_now_str()
-    metrics.to_csv(f"{OUTPUT_PATH}/SIR_SimulationData-{simulation_ts}.csv")
+    simulation_end = msk_now()
+    simulation_end_str = simulation_end.strftime(DATETIME_FORMAT)
+    elapsed = (simulation_end - simulation_start).total_seconds()
 
-    with open(f'{OUTPUT_PATH}/SIR_SimulationParams-{simulation_ts}.json', 'w') as f:
+    simulation_params['simulation_start'] = simulation_start_str
+    simulation_params['simulation_end'] = simulation_end_str
+    simulation_params['simulation_duration_seconds'] = elapsed
+
+    logger.info(f'Simulation has finished. Elapsed time {elapsed} seconds')
+
+    metrics.to_csv(f"{OUTPUT_PATH}/{SIMULATOR_NAME}_Data-{simulation_end_str}.csv")
+
+    with open(f'{OUTPUT_PATH}/{SIMULATOR_NAME}_Params-{simulation_end_str}.json', 'w') as f:
         json.dump(simulation_params, f)
