@@ -1,0 +1,14 @@
+title = "Base SEIR Scenario"
+
+[paths]
+output_path = "simulation_data"
+
+[simulation]
+random_seed = 42
+n_agents = 100
+sim_duration = 365
+
+[agents]
+beta = 0.025
+gamma = 0.01
+sigma = 0.05
