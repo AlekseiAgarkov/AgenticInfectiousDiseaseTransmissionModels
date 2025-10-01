@@ -207,3 +207,4 @@ marimo/_lsp/
 __marimo__/
 
 simulation_data/
+simulation_logs/
