@@ -11,7 +11,7 @@ class SIRBasicFSMAgent(BaseAgent):
     states: List[State] = [
         State(name='susceptible'),
         State(name='infected'),
-        State(name='resistant'),
+        State(name='recovered'),
     ]
 
     def __init__(self, env: simpy.Environment, name: str, beta: float, gamma: float, sim_duration: int):
@@ -22,12 +22,12 @@ class SIRBasicFSMAgent(BaseAgent):
 
         self.machine: Machine = Machine(model=self, states=self.states, initial=self.states[0])
         self.machine.add_transition(trigger="try_get_infected", source="susceptible", dest="infected", conditions="got_infected")
-        self.machine.add_transition(trigger="recover", source="infected", dest="resistant", conditions="got_resistant")
+        self.machine.add_transition(trigger="recover", source="infected", dest="recovered", conditions="got_recovered")
 
     def got_infected(self):
         return bool(np.random.binomial(n=1, p=self.beta))
 
-    def got_resistant(self):
+    def got_recovered(self):
         return bool(np.random.binomial(n=1, p=self.gamma))
 
     def run(self):
@@ -40,6 +40,6 @@ class SIRBasicFSMAgent(BaseAgent):
                 self.recover()
                 yield self.env.timeout(1)
 
-            if self.is_resistant():
+            if self.is_recovered():
                 till_end_of_simulation: int = (self.sim_duration - self.env.now) + 1
                 yield self.env.timeout(till_end_of_simulation)
