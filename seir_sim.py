@@ -8,6 +8,7 @@ from pathlib import Path
 import simpy
 
 from models.seir import configure_simulation
+from simulation_utils.logging import configure_logging
 from simulation_utils.time import msk_now, DATETIME_FORMAT
 
 if __name__ == '__main__':
@@ -48,6 +49,7 @@ if __name__ == '__main__':
     N_AGENTS: int = args.n_agents or config['simulation']['n_agents']
     SIM_DURATION: int = args.sim_duration or config['simulation']['sim_duration']
     OUTPUT_PATH: str = args.output_path or config['paths']['output_path']
+    LOG_OUTPUT: str = f'{config['paths']['log_output']}/{SIMULATOR_NAME}_Log-{simulation_start_str}.log'
 
     simulation_params = {
         "random_seed": RANDOM_SEED,
@@ -57,11 +59,10 @@ if __name__ == '__main__':
         **AGENT_PARAMS
     }
 
-    logger = logging.getLogger(SIMULATOR_NAME)
-    logging.basicConfig(filename=f'{config['paths']['log_output']}/{SIMULATOR_NAME}_Log-{simulation_start_str}.log',
-                        level=logging.INFO)
-    logging.getLogger('transitions').setLevel(logging.ERROR)
-    logger.info(f'Simulation has started with params: {simulation_params}')
+    log: logging.Logger = logging.getLogger(SIMULATOR_NAME)
+    log = configure_logging(logger=log, log_output=LOG_OUTPUT)
+
+    log.info(f'Simulation has started with params: {simulation_params}')
 
     random.seed(RANDOM_SEED)
     env = simpy.Environment()
@@ -76,7 +77,7 @@ if __name__ == '__main__':
     simulation_params['simulation_end'] = simulation_end_str
     simulation_params['simulation_duration_seconds'] = elapsed
 
-    logger.info(f'Simulation has finished. Elapsed time {elapsed} seconds')
+    log.info(f'Simulation has finished. Elapsed time {elapsed} seconds')
 
     metrics.to_csv(f"{OUTPUT_PATH}/{SIMULATOR_NAME}_Data-{simulation_end_str}.csv")
 
