@@ -1,8 +1,7 @@
 import logging
-from logging import Logger
 
 
-def configure_logging(logger: Logger, log_output: str):
+def configure_logging(log_output: str):
     ignored_dependencies = ['transitions']
 
     for dependency in ignored_dependencies:
@@ -16,5 +15,3 @@ def configure_logging(logger: Logger, log_output: str):
             logging.StreamHandler()
         ]
     )
-
-    return logger
