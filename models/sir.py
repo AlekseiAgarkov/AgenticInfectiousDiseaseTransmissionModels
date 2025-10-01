@@ -1,9 +1,10 @@
-from typing import List
+from typing import List, Dict
 
 import numpy as np
 import simpy
 from transitions import State, Machine
 
+from metrics.collector import MetricsCollector
 from models.agents import BaseAgent
 
 
@@ -21,8 +22,10 @@ class SIRBasicFSMAgent(BaseAgent):
         self.sim_duration: int = sim_duration
 
         self.machine: Machine = Machine(model=self, states=self.states, initial=self.states[0])
-        self.machine.add_transition(trigger="try_get_infected", source="susceptible", dest="infected", conditions="got_infected")
-        self.machine.add_transition(trigger="try_recover", source="infected", dest="recovered", conditions="got_recovered")
+        self.machine.add_transition(trigger="try_get_infected", source="susceptible", dest="infected",
+                                    conditions="got_infected")
+        self.machine.add_transition(trigger="try_recover", source="infected", dest="recovered",
+                                    conditions="got_recovered")
 
     def got_infected(self):
         return bool(np.random.binomial(n=1, p=self.beta))
@@ -43,3 +46,21 @@ class SIRBasicFSMAgent(BaseAgent):
             if self.is_recovered():
                 till_end_of_simulation: int = (self.sim_duration - self.env.now) + 1
                 yield self.env.timeout(till_end_of_simulation)
+
+
+def configure_simulation(environment: simpy.Environment, agent_params: Dict, n_agents: int) -> MetricsCollector:
+    agents: Dict[int, SIRBasicFSMAgent] = {
+        n: SIRBasicFSMAgent(env=environment, name=f"A_{n}", **agent_params)
+        for n in range(n_agents)}
+
+    metrics: MetricsCollector = MetricsCollector(
+        env=environment,
+        entities=list(agents.values()),
+        states=SIRBasicFSMAgent.states)
+
+    for a in agents.values():
+        environment.process(a.run())
+
+    environment.process(metrics.run())
+
+    return metrics
