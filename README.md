@@ -4,11 +4,12 @@ Agent-based Implementations for Infectious Disease Transmission Models.
 # Simulators
 ## Configuration
 Configuration files are located in `/configs` folder. Simulator takes CLI parameters and uses them to override default 
-configuration from `/configs/*_base.toml`, i.e. CLI params have precedence over config params.
+configuration from `/configs/*_base.toml`, i.e. CLI parameters have precedence over configuration parameters.
 
 ## SIR Simulator
-Simulator for basic SIR model (Susceptible, Infected, Recovered) is implemented in `sir_sim.py`. The Simulator takes simulation parameters either through config file or
-CLI arguments and runs an agent-based simulation for a given set of infection characteristics.
+Simulator for basic SIR model (Susceptible, Infected, Recovered) is implemented in `sir_sim.py`. 
+The Simulator takes simulation parameters either through config file or CLI arguments and runs an agent-based simulation 
+for a given set of infection characteristics.
 
 For every time unit of the simulation a snapshot of metrics is taken. Upon completion, the simulator outputs a CSV-file
 to an output location along with simulation parameters JSON.
@@ -42,8 +43,9 @@ Agent Parameters:
 * `-g`, `--gamma` - Model parameter Gamma
 
 ## SEIR Simulator
-Simulator for basic SEIR (Susceptible, Exposed, Infected, Recovered) model is implemented in `seir_sim.py`. The Simulator takes simulation parameters either through config file or
-CLI arguments and runs an agent-based simulation for a given set of infection characteristics.
+Simulator for basic SEIR (Susceptible, Exposed, Infected, Recovered) model is implemented in `seir_sim.py`. 
+The Simulator takes simulation parameters either through config file or CLI arguments and runs an agent-based simulation 
+for a given set of infection characteristics.
 
 For every time unit of the simulation a snapshot of metrics is taken. Upon completion, the simulator outputs a CSV-file
 to an output location along with simulation parameters JSON.
