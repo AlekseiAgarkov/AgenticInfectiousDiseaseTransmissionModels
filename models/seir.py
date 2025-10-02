@@ -1,10 +1,10 @@
-from typing import List, Dict
+from typing import List
 
 import numpy as np
 import simpy
-from transitions import State, Machine
+from transitions import State
+from transitions.extensions import GraphMachine
 
-from metrics.collector import MetricsCollector
 from models.agents import BaseAgent
 
 
@@ -29,7 +29,12 @@ class SEIRBasicFSMAgent(BaseAgent):
         self.gamma: float = gamma
         self.sim_duration: int = sim_duration
 
-        self.machine: Machine = Machine(model=self, states=self.states, initial=self.states[0])
+        self.machine: GraphMachine = GraphMachine(model=self,
+                                                  states=self.states,
+                                                  initial=self.states[0],
+                                                  show_conditions=True,
+                                                  show_state_attributes=True,
+                                                  title=f"{self.__class__.__name__} State Machine")
         self.machine.add_transition(trigger="try_get_exposed",
                                     source="susceptible",
                                     dest="exposed",

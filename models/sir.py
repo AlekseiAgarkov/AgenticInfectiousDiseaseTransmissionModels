@@ -2,7 +2,8 @@ from typing import List
 
 import numpy as np
 import simpy
-from transitions import State, Machine
+from transitions import State
+from transitions.extensions import GraphMachine
 
 from models.agents import BaseAgent
 
@@ -20,7 +21,12 @@ class SIRBasicFSMAgent(BaseAgent):
         self.gamma: float = gamma
         self.sim_duration: int = sim_duration
 
-        self.machine: Machine = Machine(model=self, states=self.states, initial=self.states[0])
+        self.machine: GraphMachine = GraphMachine(model=self,
+                                                  states=self.states,
+                                                  initial=self.states[0],
+                                                  show_conditions=True,
+                                                  show_state_attributes=True,
+                                                  title=f"{self.__class__.__name__} State Machine")
         self.machine.add_transition(trigger="try_get_infected", source="susceptible", dest="infected",
                                     conditions="got_infected")
         self.machine.add_transition(trigger="try_recover", source="infected", dest="recovered",
