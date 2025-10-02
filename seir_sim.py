@@ -3,6 +3,7 @@ import logging
 import random
 import tomllib
 from argparse import ArgumentParser
+from logging import Logger
 from pathlib import Path
 
 import simpy
@@ -59,7 +60,7 @@ if __name__ == '__main__':
         **AGENT_PARAMS
     }
 
-    log: logging.Logger = logging.getLogger(SIMULATOR_NAME)
+    log: Logger = logging.getLogger(SIMULATOR_NAME)
     configure_logging(log_output=LOG_OUTPUT)
 
     log.info(f'Simulation has started with params: {simulation_params}')
