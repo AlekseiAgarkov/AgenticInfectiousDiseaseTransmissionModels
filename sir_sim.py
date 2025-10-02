@@ -59,7 +59,7 @@ if __name__ == '__main__':
     }
 
     log: Logger = logging.getLogger(SIMULATOR_NAME)
-    log = configure_logging(logger=log, log_output=LOG_OUTPUT)
+    configure_logging(log_output=LOG_OUTPUT)
 
     log.info(f'Simulation has started with params: {simulation_params}')
 
