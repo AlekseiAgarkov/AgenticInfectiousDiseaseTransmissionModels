@@ -17,7 +17,7 @@ to an output location along with simulation parameters JSON.
 ### CLI Argument Reference
 Usage example:
 ```shell
-sir_sim.py -o simulation_data \
+python sir_sim.py -o simulation_data \
 -c configs/sir_base.toml \
 -r 42 \
 -n 1000 \
@@ -53,7 +53,7 @@ to an output location along with simulation parameters JSON.
 ### CLI Argument Reference
 Usage example:
 ```shell
-seir_sim.py -o simulation_data \
+python seir_sim.py -o simulation_data \
 -c configs/sir_base.toml \
 -r 42 \
 -n 1000 \
