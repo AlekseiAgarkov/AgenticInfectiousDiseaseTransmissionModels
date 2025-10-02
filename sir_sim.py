@@ -8,7 +8,7 @@ from pathlib import Path
 
 import simpy
 
-from models.sir import configure_simulation
+from models.simulation import configure_simulation
 from simulation_utils.logging import configure_logging
 from simulation_utils.time import msk_now, DATETIME_FORMAT
 
