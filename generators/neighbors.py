@@ -37,4 +37,4 @@ if __name__ == '__main__':
     neighbors_df['neighbors'] = neighbors[:, 1:].tolist()
 
     generation_ts_str = msk_now_str()
-    neighbors_df.to_csv(f"{args.output_path}/NeighborsMap-{generation_ts_str}.csv", index=False)
+    neighbors_df.to_csv(f"{args.output_path}/NeighborsMap-{args.size}by{args.size}-Agents{args.agents_number}-Neighbors{args.neighbors}-{generation_ts_str}.csv", index=False)
