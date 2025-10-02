@@ -32,6 +32,7 @@ class SEIRBasicFSMAgent(BaseAgent):
         self.machine: GraphMachine = GraphMachine(model=self,
                                                   states=self.states,
                                                   initial=self.states[0],
+                                                  graph_engine="graphviz",
                                                   show_conditions=True,
                                                   show_state_attributes=True,
                                                   title=f"{self.__class__.__name__} State Machine")
