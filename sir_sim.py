@@ -9,6 +9,7 @@ from pathlib import Path
 import simpy
 
 from models.simulation import configure_simulation
+from models.sir import SIRBasicFSMAgent
 from simulation_utils.logging import configure_logging
 from simulation_utils.time import msk_now, DATETIME_FORMAT
 
@@ -65,7 +66,10 @@ if __name__ == '__main__':
 
     random.seed(RANDOM_SEED)
     env = simpy.Environment()
-    metrics = configure_simulation(environment=env, agent_params=AGENT_PARAMS, n_agents=N_AGENTS)
+    metrics = configure_simulation(environment=env,
+                                   agent_cls=SIRBasicFSMAgent,
+                                   agent_params=AGENT_PARAMS,
+                                   n_agents=N_AGENTS)
     env.run(until=SIM_DURATION)
 
     simulation_end = msk_now()
