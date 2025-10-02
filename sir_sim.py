@@ -79,6 +79,7 @@ if __name__ == '__main__':
     simulation_params['simulation_start'] = simulation_start_str
     simulation_params['simulation_end'] = simulation_end_str
     simulation_params['simulation_duration_seconds'] = elapsed
+    simulation_params['agent_class'] = SIRBasicFSMAgent.__name__
 
     log.info(f'Simulation has finished. Elapsed time {elapsed} seconds')
 
