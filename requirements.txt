@@ -5,3 +5,4 @@ jupyter==1.1.1
 plotly==6.3.0
 scikit-learn==1.7.2
 transitions==0.9.3
+graphviz==0.21
