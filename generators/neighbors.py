@@ -33,10 +33,8 @@ if __name__ == '__main__':
     n_neighbors = args.neighbors
     nbrs = NearestNeighbors(n_neighbors=n_neighbors, algorithm='ball_tree').fit(coords)
     distances, neighbors = nbrs.kneighbors(coords)
-    coords_df = pd.DataFrame(data=coords, columns=['x', 'y'])
-    neighbors_df = pd.DataFrame(data=neighbors).loc[:, 0:]
-    neighbors_df.columns = [f"n_{i:03d}" for i in neighbors_df.columns]
-    final_df = pd.concat([coords_df, neighbors_df], axis=1)
+    neighbors_df = pd.DataFrame(data=coords, columns=['x', 'y'])
+    neighbors_df['neighbors'] = neighbors[:, 1:].tolist()
 
     generation_ts_str = msk_now_str()
-    final_df.to_csv(f"{args.output_path}/NeighborsMap-{generation_ts_str}.csv", index=False)
+    neighbors_df.to_csv(f"{args.output_path}/NeighborsMap-{generation_ts_str}.csv", index=False)
