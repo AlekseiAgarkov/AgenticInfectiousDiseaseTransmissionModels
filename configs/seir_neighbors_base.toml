@@ -1,0 +1,24 @@
+title = "SEIR Neighbors Scenario"
+
+[simulator]
+name = 'SEIR_Neighbors_Simulation'
+
+[paths]
+output_path = "simulation_data"
+log_output = "simulation_logs"
+neighbors_data_path = "simulation_conditions_data/neighbors/NeighborsMap-100by100-Agents1000-Neighbors25-2025-10-03-221534Z.csv"
+
+[simulation]
+random_seed = 42
+n_agents = 1000
+sim_duration = 365
+initially_infected = 50
+
+[agents]
+beta = 0.025
+gamma = 0.01
+sigma = 0.05
+e1 = 1
+e2 = 3
+t1 = 7
+t2 = 14
