@@ -81,9 +81,14 @@ if __name__ == '__main__':
     simulation_params['simulation_duration_seconds'] = elapsed
     simulation_params['agent_class'] = SIRBasicFSMAgent.__name__
 
+    metrics_path = f"{OUTPUT_PATH}/{SIMULATOR_NAME}_Data-{simulation_end_str}.csv"
+    params_path = f'{OUTPUT_PATH}/{SIMULATOR_NAME}_Params-{simulation_end_str}.json'
+
     log.info(f'Simulation has finished. Elapsed time {elapsed} seconds')
+    log.info(f"Saving metrics to {metrics_path}")
+    log.info(f"Saving params to {params_path}")
 
-    metrics.to_csv(f"{OUTPUT_PATH}/{SIMULATOR_NAME}_Data-{simulation_end_str}.csv")
+    metrics.to_csv(metrics_path)
 
-    with open(f'{OUTPUT_PATH}/{SIMULATOR_NAME}_Params-{simulation_end_str}.json', 'w') as f:
+    with open(params_path, 'w') as f:
         json.dump(simulation_params, f)
