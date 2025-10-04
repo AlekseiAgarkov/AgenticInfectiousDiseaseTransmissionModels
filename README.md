@@ -16,6 +16,9 @@ Simulator for basic SIR model (Susceptible, Infected, Recovered) is implemented 
 For every time unit of the simulation a snapshot of metrics is taken. Upon completion, the simulator outputs a CSV-file
 to an output location along with simulation parameters JSON.
 
+### Agent FSM Graph
+![SIRBasicFSMAgent.png](docs%2Fimg%2FSIRBasicFSMAgent.png)
+
 ### CLI Argument Reference
 Usage example:
 ```shell
@@ -50,6 +53,9 @@ Simulator for basic SEIR (Susceptible, Exposed, Infected, Recovered) model is im
 ### Metrics collection
 For every time unit of the simulation a snapshot of metrics is taken. Upon completion, the simulator outputs a CSV-file
 to an output location along with simulation parameters JSON.
+
+### Agent FSM Graph
+![SEIRBasicFSMAgent.png](docs%2Fimg%2FSEIRBasicFSMAgent.png)
 
 ### CLI Argument Reference
 Usage example:
@@ -86,6 +92,9 @@ It features neighbor interaction. Susceptible agents can transition to Exposed s
 are Infectious with a probability of $P=\beta*N_{infected}$, where $N_{infected}$ is a number of infected neighbors.
 
 Neighbors are preconfigured through `src/generators/neighbors.py` util.
+
+### Agent FSM Graph
+![SEIRNeighborsFSMAgent.png](docs%2Fimg%2FSEIRNeighborsFSMAgent.png)
 
 ### Metrics collection
 The simulator logs state transitions for every agent. Upon completion, the simulator outputs a CSV-file
