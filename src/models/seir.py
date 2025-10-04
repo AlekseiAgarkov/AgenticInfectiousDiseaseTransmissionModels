@@ -69,8 +69,7 @@ class SEIRBasicFSMAgent(BaseAgent):
         while True:
             if self.is_susceptible():
                 yield self.env.timeout(1)
-                result = self.try_get_exposed()
-                self.register_transition(from_state="susceptible", to_state="exposed")
+                self.try_get_exposed()
 
             if self.is_exposed():
                 yield self.env.timeout(1)
