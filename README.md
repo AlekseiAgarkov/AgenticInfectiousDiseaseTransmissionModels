@@ -151,7 +151,7 @@ Assigns name of the output file according to the `NeighborsMap-<s>by<s>-Agents<a
 
 Resulting 2D plane with agents distributed and neighbors assigned is as follows 
 (with arbitrary agent in red and its neighbors in blue):
-![neighbors_map.png](docs%2Fimg%2Fneighbors_map.png).
+![neighbors_map.png](docs%2Fimg%2Fneighbors_map.png)
 
 The Neighbor map visualization tool is implemented in [neighbors.ipynb](analytics%2Fneighbors.ipynb).
 
