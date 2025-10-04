@@ -8,6 +8,7 @@ from pathlib import Path
 
 import simpy
 
+from metrics.collector import Metric
 from models.simulation import configure_simulation
 from models.sir import SIRBasicFSMAgent
 from simulation_utils.logging import configure_logging
@@ -81,14 +82,14 @@ if __name__ == '__main__':
     simulation_params['simulation_duration_seconds'] = elapsed
     simulation_params['agent_class'] = SIRBasicFSMAgent.__name__
 
-    metrics_path = f"{OUTPUT_PATH}/{SIMULATOR_NAME}_Data-{simulation_end_str}.csv"
+    state_counts_path = f"{OUTPUT_PATH}/{SIMULATOR_NAME}_State_Counts-{simulation_end_str}.csv"
     params_path = f'{OUTPUT_PATH}/{SIMULATOR_NAME}_Params-{simulation_end_str}.json'
 
     log.info(f'Simulation has finished. Elapsed time {elapsed} seconds')
-    log.info(f"Saving metrics to {metrics_path}")
+    log.info(f"Saving state counts to {state_counts_path}")
     log.info(f"Saving params to {params_path}")
 
-    metrics.state_metrics_to_csv(metrics_path)
+    metrics.metrics_to_csv(kind=Metric.STATE_COUNTS, filename=state_counts_path)
 
     with open(params_path, 'w') as f:
         json.dump(simulation_params, f)
