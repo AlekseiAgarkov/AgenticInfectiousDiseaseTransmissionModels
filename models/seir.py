@@ -1,11 +1,12 @@
 import random
-from typing import List
+from typing import List, Optional, Union
 
 import numpy as np
 import simpy
-from transitions import State
+from transitions import State, EventData
 from transitions.extensions import GraphMachine
 
+from metrics.collector import MetricsCollector
 from models.agents import BaseAgent
 
 
@@ -19,7 +20,7 @@ class SEIRBasicFSMAgent(BaseAgent):
 
     def __init__(self,
                  env: simpy.Environment,
-                 name: str,
+                 name: Union[str, int],
                  beta: float,
                  gamma: float,
                  sigma: float,
@@ -34,6 +35,8 @@ class SEIRBasicFSMAgent(BaseAgent):
                                                   states=self.states,
                                                   initial=self.states[0],
                                                   graph_engine="graphviz",
+                                                  finalize_event='finalize',
+                                                  send_event=True,
                                                   show_conditions=True,
                                                   show_state_attributes=True,
                                                   title=f"{self.__class__.__name__} State Machine")
@@ -50,20 +53,24 @@ class SEIRBasicFSMAgent(BaseAgent):
                                     dest="recovered",
                                     conditions="got_recovered")
 
-    def got_exposed(self) -> bool:
+    def finalize(self, event: EventData):
+        pass
+
+    def got_exposed(self, event: EventData) -> bool:
         return bool(np.random.binomial(n=1, p=self.beta))
 
-    def got_infected(self) -> bool:
+    def got_infected(self, event: EventData) -> bool:
         return bool(np.random.binomial(n=1, p=self.sigma))
 
-    def got_recovered(self) -> bool:
+    def got_recovered(self, event: EventData) -> bool:
         return bool(np.random.binomial(n=1, p=self.gamma))
 
     def run(self):
         while True:
             if self.is_susceptible():
                 yield self.env.timeout(1)
-                self.try_get_exposed()
+                result = self.try_get_exposed()
+                self.register_transition(from_state="susceptible", to_state="exposed")
 
             if self.is_exposed():
                 yield self.env.timeout(1)
@@ -81,7 +88,7 @@ class SEIRBasicFSMAgent(BaseAgent):
 class SEIRNeighborsFSMAgent(SEIRBasicFSMAgent):
     def __init__(self,
                  env: simpy.Environment,
-                 name: str,
+                 name: Union[str, int],
                  beta: float,
                  gamma: float,
                  sigma: float,
@@ -99,19 +106,32 @@ class SEIRNeighborsFSMAgent(SEIRBasicFSMAgent):
         self.e2 = e2
         self.t2 = t2
         self.t1 = t1
+        self.metrics_collector: Optional[MetricsCollector] = None
 
-    def got_exposed(self) -> bool:
+    def finalize(self, event: EventData):
+        if event.result:
+            transition_record = {"time": self.env.now,
+                                 "agent": self.name,
+                                 "event": "transition",
+                                 "source_state": event.transition.source,
+                                 "dest_state": event.transition.dest}
+            self.metrics_collector.append_transition_record(transition_record)
+
+    def got_exposed(self, event: EventData) -> bool:
         p = min([sum(n.beta * n.is_infected() for n in self.neighbors), 1.])
         return bool(np.random.binomial(n=1, p=p))
 
-    def got_infected(self) -> bool:
+    def got_infected(self, event: EventData) -> bool:
         return True
 
-    def got_recovered(self) -> bool:
+    def got_recovered(self, event: EventData) -> bool:
         return True
 
     def set_neighbors(self, neighbors: List['SEIRNeighborsFSMAgent']):
         self.neighbors = neighbors
+
+    def set_metrics_collector(self, metrics_collector: MetricsCollector):
+        self.metrics_collector = metrics_collector
 
     def run(self):
         while True:

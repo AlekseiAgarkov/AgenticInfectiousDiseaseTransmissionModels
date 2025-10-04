@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import List
+from typing import List, Dict
 
 import pandas as pd
 import simpy
@@ -40,11 +40,8 @@ class MetricsCollector:
             }
         }
 
-    def append_transition_record(self, agent_name: str, time: int, from_state: str, to_state: str):
-        self._get_container(kind=Metric.TRANSITIONS).append({"time": time,
-                                                             "agent_name": agent_name,
-                                                             "from_state": from_state,
-                                                             "to_state": to_state})
+    def append_transition_record(self, transition_record: Dict):
+        self._get_container(kind=Metric.TRANSITIONS).append(transition_record)
 
     def _get_container(self, kind: Metric):
         return self.__getattribute__(f"_{kind.value}_container")
