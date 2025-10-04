@@ -1,12 +1,12 @@
 import random
-from typing import List, Optional, Union
+from typing import List, Union
 
 import numpy as np
 import simpy
 from transitions import State, EventData
 from transitions.extensions import GraphMachine
 
-from metrics.collector import MetricsCollector
+from metrics.collector import TransitionMetricsCollector
 from models.agents import BaseAgent
 
 
@@ -87,6 +87,7 @@ class SEIRBasicFSMAgent(BaseAgent):
 class SEIRNeighborsFSMAgent(SEIRBasicFSMAgent):
     def __init__(self,
                  env: simpy.Environment,
+                 metrics_collector: TransitionMetricsCollector,
                  name: Union[str, int],
                  beta: float,
                  gamma: float,
@@ -105,7 +106,7 @@ class SEIRNeighborsFSMAgent(SEIRBasicFSMAgent):
         self.e2 = e2
         self.t2 = t2
         self.t1 = t1
-        self.metrics_collector: Optional[MetricsCollector] = None
+        self.metrics_collector: TransitionMetricsCollector = metrics_collector
 
     def finalize(self, event: EventData):
         if event.result:
@@ -128,9 +129,6 @@ class SEIRNeighborsFSMAgent(SEIRBasicFSMAgent):
 
     def set_neighbors(self, neighbors: List['SEIRNeighborsFSMAgent']):
         self.neighbors = neighbors
-
-    def set_metrics_collector(self, metrics_collector: MetricsCollector):
-        self.metrics_collector = metrics_collector
 
     def run(self):
         while True:
