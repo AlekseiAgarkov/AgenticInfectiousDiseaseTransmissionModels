@@ -16,12 +16,12 @@ class MetricsCollector:
         self.env = env
         self.entities = entities
         self.states: List[State] = states
-        self._metrics_container: List = []
+        self._state_metrics_container: List = []
 
     def run(self):
         while True:
             metrics = self._collect_metrics()
-            self._metrics_container.append(metrics)
+            self._state_metrics_container.append(metrics)
             yield self.env.timeout(1)
 
     def _collect_metrics(self) -> dict:
@@ -33,9 +33,9 @@ class MetricsCollector:
             }
         }
 
-    def get_metrics(self) -> pd.DataFrame:
-        return pd.DataFrame(self._metrics_container)
+    def get_state_metrics(self) -> pd.DataFrame:
+        return pd.DataFrame(self._state_metrics_container)
 
-    def to_csv(self, filename: str) -> None:
-        df: pd.DataFrame = self.get_metrics()
+    def state_metrics_to_csv(self, filename: str) -> None:
+        df: pd.DataFrame = self.get_state_metrics()
         df.to_csv(filename, index=False)

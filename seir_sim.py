@@ -90,7 +90,7 @@ if __name__ == '__main__':
     log.info(f"Saving metrics to {metrics_path}")
     log.info(f"Saving params to {params_path}")
 
-    metrics.to_csv(metrics_path)
+    metrics.state_metrics_to_csv(metrics_path)
 
     with open(params_path, 'w') as f:
         json.dump(simulation_params, f)
