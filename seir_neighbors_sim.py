@@ -22,6 +22,8 @@ if __name__ == '__main__':
     paths.add_argument('-o', '--output_path', type=str, nargs="?", help="Simulation data output folder")
     paths.add_argument('-c', '--config_path', type=str, nargs="?", default=None,
                        help="Config path")
+    paths.add_argument('--neighbors_data_path', type=str, nargs="?", default=None,
+                       help="Path to Neighbors Data")
 
     simulation_params = p.add_argument_group("simulation_params")
     simulation_params.add_argument('-r', '--random_seed', type=int, nargs="?", help="Random seed")
