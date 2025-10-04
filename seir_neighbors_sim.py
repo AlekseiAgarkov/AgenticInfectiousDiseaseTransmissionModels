@@ -90,7 +90,8 @@ if __name__ == '__main__':
 
     random.seed(RANDOM_SEED)
     env = simpy.Environment()
-    metrics = configure_neighbors_simulation(environment=env,
+    metrics = configure_neighbors_simulation(log=log,
+                                             environment=env,
                                              agent_params=AGENT_PARAMS,
                                              neighbors_data=NEIGHBORS_DATA,
                                              initially_infected=INITIALLY_INFECTED)
@@ -106,13 +107,16 @@ if __name__ == '__main__':
     simulation_params['agent_class'] = SEIRNeighborsFSMAgent.__name__
 
     state_counts_path = f"{OUTPUT_PATH}/{SIMULATOR_NAME}_State_Counts-{simulation_end_str}.csv"
+    transitions_path = f"{OUTPUT_PATH}/{SIMULATOR_NAME}_Transitions-{simulation_end_str}.csv"
     params_path = f"{OUTPUT_PATH}/{SIMULATOR_NAME}_Params-{simulation_end_str}.json"
 
     log.info(f'Simulation has finished. Elapsed time {elapsed} seconds')
     log.info(f"Saving state counts to {state_counts_path}")
+    log.info(f"Saving transitions to {transitions_path}")
     log.info(f"Saving params to {params_path}")
 
     metrics.metrics_to_csv(kind=Metric.STATE_COUNTS, filename=state_counts_path)
+    metrics.metrics_to_csv(kind=Metric.TRANSITIONS, filename=transitions_path)
 
     with open(params_path, 'w') as f:
         json.dump(simulation_params, f)
