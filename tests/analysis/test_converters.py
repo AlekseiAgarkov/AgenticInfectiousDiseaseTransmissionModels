@@ -71,6 +71,5 @@ class Test(TestCase):
                                                         initial_state='susceptible',
                                                         n_agents=3,
                                                         sim_duration=8)
-        print(result_df)
-        # print(agent_states_test_df.compare(result_df))
+
         self.assertTrue(agent_states_test_df.equals(result_df))

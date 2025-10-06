@@ -54,18 +54,25 @@ def convert_transitions_to_agent_states(transitions_df: pd.DataFrame,
 
     time = pd.DataFrame(range(sim_duration), columns=['time'])
 
+    agents_at_time_0 = transitions_df[transitions_df['time'] == 0].agent.tolist()
+    missing_agents_at_time_0 = [a for a in range(n_agents) if a not in agents_at_time_0]
+    zeroes = np.zeros(len(missing_agents_at_time_0), dtype=int)
+    missing_agents_at_time_0 = pd.DataFrame(
+        {'time': zeroes,
+         'agent': missing_agents_at_time_0,
+         'dest_state': states_numeric[initial_state]})
+
     transitions_data = (
         transitions_df[['time', 'agent', 'dest_state']]
-        .assign(dest_state=lambda _df: _df.dest_state.map(states_numeric))
+        .assign(dest_state=lambda _df: _df.dest_state.map(states_numeric)))
+
+    transitions_data = (
+        pd.concat([missing_agents_at_time_0, transitions_data])
+        .sort_values(['time', 'agent', 'dest_state'])
         .pivot_table(index='time', columns='agent', values='dest_state', aggfunc='last')
         .reset_index()
         .rename_axis(None, axis=1)
         .merge(time, on='time', how='right')
-    )
-    agent_cols = range(n_agents)
-    transitions_data.loc[0, agent_cols] = transitions_data.loc[0, agent_cols].fillna(states_numeric[initial_state])
-    transitions_data = (
-        transitions_data
         .ffill()
         .melt(id_vars='time', var_name='agent', value_name='state')
         .astype({'state': 'uint8', 'agent': 'uint64'})
