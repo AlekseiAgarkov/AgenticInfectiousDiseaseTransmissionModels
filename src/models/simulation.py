@@ -1,6 +1,6 @@
 import random
 from logging import Logger
-from typing import Type, Dict
+from typing import Type, Dict, List, Optional
 
 import pandas as pd
 import simpy
@@ -37,7 +37,8 @@ def configure_neighbors_simulation(log: Logger,
                                    environment: simpy.Environment,
                                    agent_params: Dict,
                                    neighbors_data: pd.DataFrame,
-                                   initially_infected: int) -> TransitionMetricsCollector:
+                                   initially_infected: int,
+                                   initially_infected_indices: Optional[List] = None) -> TransitionMetricsCollector:
 
     log.info("Initializing Metrics Collector")
     metrics_collector: TransitionMetricsCollector = TransitionMetricsCollector()
@@ -58,7 +59,9 @@ def configure_neighbors_simulation(log: Logger,
         a.set_neighbors(neighbors)
 
     log.info("Initializing Infected Agents")
-    for agent in random.sample(list(agents.keys()), initially_infected):
+    agents_to_infect = initially_infected_indices or list(random.sample(list(agents.keys()), initially_infected))
+
+    for agent in tqdm(agents_to_infect):
         agents[agent].to_infected()
 
     log.info("Submitting Agents to Environment")

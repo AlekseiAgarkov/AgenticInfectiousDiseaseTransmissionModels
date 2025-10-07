@@ -6,6 +6,7 @@ import tomllib
 from argparse import ArgumentParser
 from logging import Logger
 from pathlib import Path
+from typing import List
 
 import pandas as pd
 import simpy
@@ -65,6 +66,7 @@ if __name__ == '__main__':
 
     N_AGENTS: int = args.n_agents or config['simulation']['n_agents']
     INITIALLY_INFECTED: int = args.initially_infected or config['simulation']['initially_infected']
+    INITIALLY_INFECTED_INDICES: List[int] = config['simulation'].get('initially_infected_indices')
 
     assert N_AGENTS == NEIGHBORS_DATA.shape[0]
 
@@ -92,7 +94,8 @@ if __name__ == '__main__':
                                              environment=env,
                                              agent_params=AGENT_PARAMS,
                                              neighbors_data=NEIGHBORS_DATA,
-                                             initially_infected=INITIALLY_INFECTED)
+                                             initially_infected=INITIALLY_INFECTED,
+                                             initially_infected_indices=INITIALLY_INFECTED_INDICES)
 
     log.info(f"Running Simulation: {config['title']}")
     env.run(until=SIM_DURATION)
