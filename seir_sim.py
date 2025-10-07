@@ -9,7 +9,7 @@ from pathlib import Path
 import simpy
 
 from metrics.collector import Metric
-from models.seir import SEIRBasicFSMAgent
+from models.seir import SEIRClassicFSMAgent
 from models.simulation import configure_simulation
 from simulation_utils.logging import configure_logging
 from simulation_utils.time import msk_now, DATETIME_FORMAT
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     random.seed(RANDOM_SEED)
     env = simpy.Environment()
     metrics = configure_simulation(environment=env,
-                                   agent_cls=SEIRBasicFSMAgent,
+                                   agent_cls=SEIRClassicFSMAgent,
                                    agent_params=AGENT_PARAMS,
                                    n_agents=N_AGENTS)
     env.run(until=SIM_DURATION)
@@ -82,7 +82,7 @@ if __name__ == '__main__':
     simulation_params['simulation_start'] = simulation_start_str
     simulation_params['simulation_end'] = simulation_end_str
     simulation_params['simulation_duration_seconds'] = elapsed
-    simulation_params['agent_class'] = SEIRBasicFSMAgent.__name__
+    simulation_params['agent_class'] = SEIRClassicFSMAgent.__name__
 
     state_counts_path = f"{OUTPUT_PATH}/{SIMULATOR_NAME}_State_Counts-{simulation_end_str}.csv"
     params_path = f"{OUTPUT_PATH}/{SIMULATOR_NAME}_Params-{simulation_end_str}.json"

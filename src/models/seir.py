@@ -1,5 +1,5 @@
 import random
-from typing import List, Union
+from typing import List, Union, Optional
 
 import numpy as np
 import simpy
@@ -10,7 +10,7 @@ from metrics.collector import TransitionMetricsCollector
 from models.agents import BaseAgent
 
 
-class SEIRBasicFSMAgent(BaseAgent):
+class SEIRFSMBase(BaseAgent):
     states: List[State] = [
         State(name='susceptible'),
         State(name='exposed'),
@@ -21,14 +21,8 @@ class SEIRBasicFSMAgent(BaseAgent):
     def __init__(self,
                  env: simpy.Environment,
                  name: Union[str, int],
-                 beta: float,
-                 gamma: float,
-                 sigma: float,
                  sim_duration: int):
         super().__init__(env=env, name=name)
-        self.beta: float = beta
-        self.sigma: float = sigma
-        self.gamma: float = gamma
         self.sim_duration: int = sim_duration
 
         self.machine: GraphMachine = GraphMachine(model=self,
@@ -40,6 +34,7 @@ class SEIRBasicFSMAgent(BaseAgent):
                                                   show_conditions=True,
                                                   show_state_attributes=True,
                                                   title=f"{self.__class__.__name__} State Machine")
+
         self.machine.add_transition(trigger="try_get_exposed",
                                     source="susceptible",
                                     dest="exposed",
@@ -57,13 +52,13 @@ class SEIRBasicFSMAgent(BaseAgent):
         pass
 
     def got_exposed(self, event: EventData) -> bool:
-        return bool(np.random.binomial(n=1, p=self.beta))
+        return True
 
     def got_infected(self, event: EventData) -> bool:
-        return bool(np.random.binomial(n=1, p=self.sigma))
+        return True
 
     def got_recovered(self, event: EventData) -> bool:
-        return bool(np.random.binomial(n=1, p=self.gamma))
+        return True
 
     def run(self):
         while True:
@@ -84,14 +79,35 @@ class SEIRBasicFSMAgent(BaseAgent):
                 yield self.env.timeout(till_end_of_simulation)
 
 
-class SEIRNeighborsFSMAgent(SEIRBasicFSMAgent):
+class SEIRClassicFSMAgent(SEIRFSMBase):
+    def __init__(self,
+                 env: simpy.Environment,
+                 name: Union[str, int],
+                 beta: float,
+                 gamma: float,
+                 sigma: float,
+                 sim_duration: int):
+        super().__init__(env=env, name=name, sim_duration=sim_duration)
+        self.beta: float = beta
+        self.sigma: float = sigma
+        self.gamma: float = gamma
+
+    def got_exposed(self, event: EventData) -> bool:
+        return bool(np.random.binomial(n=1, p=self.beta))
+
+    def got_infected(self, event: EventData) -> bool:
+        return bool(np.random.binomial(n=1, p=self.sigma))
+
+    def got_recovered(self, event: EventData) -> bool:
+        return bool(np.random.binomial(n=1, p=self.gamma))
+
+
+class SEIRNeighborsFSMAgent(SEIRFSMBase):
     def __init__(self,
                  env: simpy.Environment,
                  metrics_collector: TransitionMetricsCollector,
                  name: Union[str, int],
                  beta: float,
-                 gamma: float,
-                 sigma: float,
                  sim_duration: int,
                  x: float,
                  y: float,
@@ -99,7 +115,9 @@ class SEIRNeighborsFSMAgent(SEIRBasicFSMAgent):
                  e2: int,
                  t1: int,
                  t2: int):
-        super().__init__(env=env, name=name, beta=beta, gamma=gamma, sigma=sigma, sim_duration=sim_duration)
+        super().__init__(env=env, name=name, sim_duration=sim_duration)
+        self.neighbors = Optional[List['SEIRNeighborsFSMAgent']]
+        self.beta = beta
         self.y = y
         self.x = x
         self.e1 = e1
@@ -121,14 +139,8 @@ class SEIRNeighborsFSMAgent(SEIRBasicFSMAgent):
         p = min([sum(n.beta * n.is_infected() for n in self.neighbors), 1.])
         return bool(np.random.binomial(n=1, p=p))
 
-    def got_infected(self, event: EventData) -> bool:
-        return True
-
-    def got_recovered(self, event: EventData) -> bool:
-        return True
-
     def set_neighbors(self, neighbors: List['SEIRNeighborsFSMAgent']):
-        self.neighbors = neighbors
+        self.neighbors: Optional[List['SEIRNeighborsFSMAgent']] = neighbors
 
     def run(self):
         while True:

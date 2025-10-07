@@ -34,8 +34,6 @@ if __name__ == '__main__':
 
     agent_params = p.add_argument_group("agent_params")
     agent_params.add_argument('-b', '--beta', type=float, nargs="?", help="Model parameter Beta")
-    agent_params.add_argument('-g', '--gamma', type=float, nargs="?", help="Model parameter Gamma")
-    agent_params.add_argument('-s', '--sigma', type=float, nargs="?", help="Model parameter Sigma")
     agent_params.add_argument('--e1', type=float, nargs="?", help="Min Exposed State Duration")
     agent_params.add_argument('--e2', type=float, nargs="?", help="Max Exposed State Duration")
     agent_params.add_argument('--t1', type=float, nargs="?", help="Min Infected State Duration")
@@ -53,8 +51,6 @@ if __name__ == '__main__':
 
     AGENT_PARAMS: dict = {
         "beta": args.beta or config['agents']['beta'],
-        "gamma": args.gamma or config['agents']['gamma'],
-        "sigma": args.gamma or config['agents']['sigma'],
         "sim_duration": args.sim_duration or config['simulation']['sim_duration'],
         "e1": args.e1 or config['agents']['e1'],
         "e2": args.e2 or config['agents']['e2'],

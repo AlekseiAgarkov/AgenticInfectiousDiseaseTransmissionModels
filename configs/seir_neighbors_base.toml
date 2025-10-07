@@ -16,8 +16,6 @@ initially_infected = 50
 
 [agents]
 beta = 0.025
-gamma = 0.01
-sigma = 0.05
 e1 = 1
 e2 = 3
 t1 = 7

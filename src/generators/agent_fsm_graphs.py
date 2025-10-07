@@ -1,7 +1,7 @@
 from simpy import Environment
 
 from metrics.collector import TransitionMetricsCollector
-from models.seir import SEIRBasicFSMAgent, SEIRNeighborsFSMAgent
+from models.seir import SEIRClassicFSMAgent, SEIRNeighborsFSMAgent
 from models.sir import SIRBasicFSMAgent
 
 
@@ -17,8 +17,8 @@ if __name__ == '__main__':
     sir_basic_fsm_agent = SIRBasicFSMAgent(env=env, name="", beta=0.01, gamma=0.01, sim_duration=100)
     generate_graph(sir_basic_fsm_agent, path=f"docs/img/{SIRBasicFSMAgent.__name__}.png")
 
-    seir_basic_fsm_agent = SEIRBasicFSMAgent(env=env, name="", beta=0.01, gamma=0.01, sigma=0.11, sim_duration=100)
-    generate_graph(sir_basic_fsm_agent, path=f"docs/img/{SEIRBasicFSMAgent.__name__}.png")
+    seir_basic_fsm_agent = SEIRClassicFSMAgent(env=env, name="", beta=0.01, gamma=0.01, sigma=0.11, sim_duration=100)
+    generate_graph(sir_basic_fsm_agent, path=f"docs/img/{SEIRClassicFSMAgent.__name__}.png")
 
     metrics_collector = TransitionMetricsCollector()
     seir_neighbors_fsm_agent = SEIRNeighborsFSMAgent(
