@@ -93,6 +93,8 @@ if __name__ == '__main__':
                                              agent_params=AGENT_PARAMS,
                                              neighbors_data=NEIGHBORS_DATA,
                                              initially_infected=INITIALLY_INFECTED)
+
+    log.info(f"Running Simulation: {config['title']}")
     env.run(until=SIM_DURATION)
 
     simulation_end = msk_now()
