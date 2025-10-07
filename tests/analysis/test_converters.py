@@ -26,34 +26,36 @@ state_counts_test_data = [
 ]
 state_counts_test_df = pd.DataFrame(state_counts_test_data)
 
-agent_states_test_data = [{'time': 0, 'agent': 0, 'state': 1},
-                          {'time': 0, 'agent': 1, 'state': 0},
-                          {'time': 0, 'agent': 2, 'state': 0},
-                          {'time': 1, 'agent': 0, 'state': 1},
-                          {'time': 1, 'agent': 1, 'state': 0},
-                          {'time': 1, 'agent': 2, 'state': 0},
-                          {'time': 2, 'agent': 0, 'state': 1},
-                          {'time': 2, 'agent': 1, 'state': 1},
-                          {'time': 2, 'agent': 2, 'state': 0},
-                          {'time': 3, 'agent': 0, 'state': 1},
-                          {'time': 3, 'agent': 1, 'state': 1},
-                          {'time': 3, 'agent': 2, 'state': 1},
-                          {'time': 4, 'agent': 0, 'state': 1},
-                          {'time': 4, 'agent': 1, 'state': 1},
-                          {'time': 4, 'agent': 2, 'state': 1},
-                          {'time': 5, 'agent': 0, 'state': 2},
-                          {'time': 5, 'agent': 1, 'state': 1},
-                          {'time': 5, 'agent': 2, 'state': 1},
-                          {'time': 6, 'agent': 0, 'state': 2},
-                          {'time': 6, 'agent': 1, 'state': 2},
-                          {'time': 6, 'agent': 2, 'state': 2},
-                          {'time': 7, 'agent': 0, 'state': 2},
-                          {'time': 7, 'agent': 1, 'state': 2},
-                          {'time': 7, 'agent': 2, 'state': 2}]
+agent_states_test_data = [{'time': 0, 'agent': 0, 'state': 'infected'},
+                          {'time': 0, 'agent': 1, 'state': 'susceptible'},
+                          {'time': 0, 'agent': 2, 'state': 'susceptible'},
+                          {'time': 1, 'agent': 0, 'state': 'infected'},
+                          {'time': 1, 'agent': 1, 'state': 'susceptible'},
+                          {'time': 1, 'agent': 2, 'state': 'susceptible'},
+                          {'time': 2, 'agent': 0, 'state': 'infected'},
+                          {'time': 2, 'agent': 1, 'state': 'infected'},
+                          {'time': 2, 'agent': 2, 'state': 'susceptible'},
+                          {'time': 3, 'agent': 0, 'state': 'infected'},
+                          {'time': 3, 'agent': 1, 'state': 'infected'},
+                          {'time': 3, 'agent': 2, 'state': 'infected'},
+                          {'time': 4, 'agent': 0, 'state': 'infected'},
+                          {'time': 4, 'agent': 1, 'state': 'infected'},
+                          {'time': 4, 'agent': 2, 'state': 'infected'},
+                          {'time': 5, 'agent': 0, 'state': 'recovered'},
+                          {'time': 5, 'agent': 1, 'state': 'infected'},
+                          {'time': 5, 'agent': 2, 'state': 'infected'},
+                          {'time': 6, 'agent': 0, 'state': 'recovered'},
+                          {'time': 6, 'agent': 1, 'state': 'recovered'},
+                          {'time': 6, 'agent': 2, 'state': 'recovered'},
+                          {'time': 7, 'agent': 0, 'state': 'recovered'},
+                          {'time': 7, 'agent': 1, 'state': 'recovered'},
+                          {'time': 7, 'agent': 2, 'state': 'recovered'}]
 
 agent_states_test_df = pd.DataFrame(agent_states_test_data)
-agent_states_test_df['state'] = agent_states_test_df['state'].astype('uint8')
 agent_states_test_df['agent'] = agent_states_test_df['agent'].astype('uint64')
+agent_states_test_df['state'] = pd.Categorical(agent_states_test_df['state'],
+                                               categories=['susceptible', 'infected', 'recovered'],
+                                               ordered=True)
 
 
 class Test(TestCase):
@@ -71,5 +73,8 @@ class Test(TestCase):
                                                         initial_state='susceptible',
                                                         n_agents=3,
                                                         sim_duration=8)
+
+        print(agent_states_test_df.dtypes)
+        print(result_df.dtypes)
 
         self.assertTrue(agent_states_test_df.equals(result_df))

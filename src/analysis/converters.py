@@ -60,22 +60,19 @@ def convert_transitions_to_agent_states(transitions_df: pd.DataFrame,
     missing_agents_at_time_0 = pd.DataFrame(
         {'time': zeroes,
          'agent': missing_agents_at_time_0,
-         'dest_state': states_numeric[initial_state]})
+         'dest_state': initial_state})
 
     transitions_data = (
-        transitions_df[['time', 'agent', 'dest_state']]
-        .assign(dest_state=lambda _df: _df.dest_state.map(states_numeric)))
-
-    transitions_data = (
-        pd.concat([missing_agents_at_time_0, transitions_data])
+        pd.concat([missing_agents_at_time_0, transitions_df[['time', 'agent', 'dest_state']]])
+        .assign(dest_state = lambda _df: pd.Categorical(_df.dest_state, states, ordered=True))
         .sort_values(['time', 'agent', 'dest_state'])
         .pivot_table(index='time', columns='agent', values='dest_state', aggfunc='last')
         .reset_index()
-        .rename_axis(None, axis=1)
+        .rename_axis(mapper=None, axis=1)
         .merge(time, on='time', how='right')
         .ffill()
         .melt(id_vars='time', var_name='agent', value_name='state')
-        .astype({'state': 'uint8', 'agent': 'uint64'})
+        .astype({'agent': 'uint64'})
         .sort_values(by=['time', 'agent'])
         .reset_index(drop=True)
     )
