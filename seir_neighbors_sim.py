@@ -108,6 +108,7 @@ if __name__ == '__main__':
     simulation_params['simulation_end'] = simulation_end_str
     simulation_params['simulation_duration_seconds'] = elapsed
     simulation_params['agent_class'] = SEIRNeighborsFSMAgent.__name__
+    simulation_params['scenario_name'] = config['title']
 
     transitions_path = f"{OUTPUT_PATH}/{SIMULATOR_NAME}_Transitions-{simulation_end_str}.csv"
     params_path = f"{OUTPUT_PATH}/{SIMULATOR_NAME}_Params-{simulation_end_str}.json"
