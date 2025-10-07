@@ -8,6 +8,7 @@ import simpy
 from metrics.collector import StateCountMetricsCollector, MetricsCollector, TransitionMetricsCollector
 from models.agents import BaseAgent
 from models.seir import SEIRNeighborsFSMAgent
+from tqdm import tqdm
 
 
 def configure_simulation(environment: simpy.Environment,
@@ -24,7 +25,7 @@ def configure_simulation(environment: simpy.Environment,
         entities=list(agents.values()),
         states=agent_cls.states)
 
-    for a in agents.values():
+    for a in tqdm(agents.values()):
         environment.process(a.run())
 
     environment.process(metrics.run())
@@ -43,7 +44,7 @@ def configure_neighbors_simulation(log: Logger,
 
     log.info("Initializing Agents")
     agents: Dict[int, SEIRNeighborsFSMAgent] = {}
-    for n in range(neighbors_data.shape[0]):
+    for n in tqdm(range(neighbors_data.shape[0])):
         agents[n] = SEIRNeighborsFSMAgent(env=environment,
                                           metrics_collector=metrics_collector,
                                           name=n,
@@ -52,7 +53,7 @@ def configure_neighbors_simulation(log: Logger,
                                           y=float(neighbors_data['y'].iloc[n]))
 
     log.info("Linking Neighbors")
-    for i, a in agents.items():
+    for i, a in tqdm(agents.items()):
         neighbors = [agents[n] for n in neighbors_data['neighbors'].iloc[i]]
         a.set_neighbors(neighbors)
 
@@ -61,7 +62,7 @@ def configure_neighbors_simulation(log: Logger,
         agents[agent].to_infected()
 
     log.info("Submitting Agents to Environment")
-    for a in agents.values():
+    for a in tqdm(agents.values()):
         environment.process(a.run())
 
     return metrics_collector
