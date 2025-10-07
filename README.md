@@ -55,7 +55,7 @@ For every time unit of the simulation a snapshot of metrics is taken. Upon compl
 to an output location along with simulation parameters JSON.
 
 ### Agent FSM Graph
-![SEIRBasicFSMAgent.png](docs%2Fimg%2FSEIRBasicFSMAgent.png)
+![SEIRClassicFSMAgent.png](docs%2Fimg%2FSEIRClassicFSMAgent.png)
 
 ### CLI Argument Reference
 Usage example:
@@ -109,8 +109,6 @@ python seir_neighbors_sim.py -o simulation_data \
 -n 1000 \
 -t 365 \
 -b 0.025 \
--g 0.05 \
--s 0.05 \
 --e1 1 \
 --e2 3 \
 --t1 5 \
@@ -134,8 +132,6 @@ Simulation Parameters:
 
 Agent Parameters:
 * `-b`, `--beta` - Model parameter Beta
-* `-g`, `--gamma` - Model parameter Gamma
-* `-s`, `--sigma` - Model parameter Sigma
 * `e1`, Minimal Exposed State Duration
 * `e2`, Maximal Exposed State Duration
 * `t1`, Minimal Infected State Duration

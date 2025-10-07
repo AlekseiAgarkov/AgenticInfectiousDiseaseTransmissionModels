@@ -5,8 +5,6 @@ from models.seir import SEIRClassicFSMAgent, SEIRNeighborsFSMAgent
 from models.sir import SIRBasicFSMAgent
 
 
-
-
 def generate_graph(agent, path):
     agent.machine.get_graph().draw(path, format="png", prog='dot')
 
@@ -25,7 +23,7 @@ if __name__ == '__main__':
         env=env,
         metrics_collector=metrics_collector,
         name="",
-        beta=0.01, gamma=0.01, sigma=0.11,
+        beta=0.01,
         sim_duration=100,
         x=0.01, y=0.01,
         e1=1, e2=5,
