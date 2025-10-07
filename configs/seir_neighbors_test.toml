@@ -1,4 +1,4 @@
-title = "SEIR Neighbors Scenario"
+title = "SEIR Neighbors Test Scenario"
 
 [simulator]
 name = 'SEIR_Neighbors_Simulation'
