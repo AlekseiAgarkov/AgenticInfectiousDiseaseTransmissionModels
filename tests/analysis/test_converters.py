@@ -1,8 +1,7 @@
 from unittest import TestCase
 
 import pandas as pd
-
-from src.analysis.converters import convert_transitions_to_state_counts, convert_transitions_to_agent_states
+from analysis.converters import convert_transitions_to_state_counts, convert_transitions_to_agent_states
 
 transitions_data = [
     {'time': 0, 'agent': 0, 'source_state': 'susceptible', 'dest_state': 'infected'},
@@ -58,7 +57,7 @@ agent_states_test_df['state'] = pd.Categorical(agent_states_test_df['state'],
                                                ordered=True)
 
 
-class Test(TestCase):
+class ConvertersTest(TestCase):
     def test_convert_transitions_to_state_counts(self):
         result_df = convert_transitions_to_state_counts(transitions_df=transitions_df,
                                                         states=['susceptible', 'infected', 'recovered'],
