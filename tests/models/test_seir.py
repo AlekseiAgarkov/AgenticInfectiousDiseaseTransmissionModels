@@ -81,7 +81,7 @@ class SEIRClassicFSMAgentTransitionNeverTests(TestCase):
         assert self.seir.state == 'infected'
 
 
-class SEIRNeighborsFSMAgentNoInfectedNeighbors(TestCase):
+class SEIRNeighborsFSMAgentNoInfectedNeighborsTests(TestCase):
     def setUp(self):
         env = MagicMock()
         env.now = 0
@@ -125,7 +125,7 @@ class SEIRNeighborsFSMAgentNoInfectedNeighbors(TestCase):
         assert self.seir.state == 'exposed'
 
     def test_try_get_exposed_from_non_infective(self):
-        non_infective_neighbor = SEIRNeighborsFSMAgent(**{**self.seir_params, "beta": 0.0, "name": 'neigbor'})
+        non_infective_neighbor = SEIRNeighborsFSMAgent(**{**self.seir_params, "beta": 0.0, "name": 'neighbor'})
         non_infective_neighbor.to_infected()
         assert non_infective_neighbor.state == 'infected'
 
