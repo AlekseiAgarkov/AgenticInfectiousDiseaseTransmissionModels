@@ -161,3 +161,38 @@ class SEIRNeighborsFSMAgent(SEIRFSMBase):
             if self.is_recovered():
                 till_end_of_simulation: int = (self.sim_duration - self.env.now) + 1
                 yield self.env.timeout(till_end_of_simulation)
+
+
+class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
+    def __init__(self,
+                 env: simpy.Environment,
+                 metrics_collector: TransitionMetricsCollector,
+                 name: Union[str, int],
+                 beta: float,
+                 sim_duration: int,
+                 x: float,
+                 y: float,
+                 e1: int,
+                 e2: int,
+                 t1: int,
+                 t2: int,
+                 immunity: float):
+        super().__init__(env=env,
+                         metrics_collector=metrics_collector,
+                         name=name,
+                         beta=beta,
+                         sim_duration=sim_duration,
+                         x=x,
+                         y=y,
+                         e1=e1,
+                         e2=e2,
+                         t1=t1,
+                         t2=t2)
+
+        self.immunity: float = immunity
+
+    def got_exposed(self, event: EventData) -> bool:
+        neighbor_infect_p = sum(n.beta * n.is_infected() for n in self.neighbors)
+        adjusted_for_immunity = neighbor_infect_p * (1 - self.immunity)
+        p = min([adjusted_for_immunity, 1.])
+        return bool(np.random.binomial(n=1, p=p))
