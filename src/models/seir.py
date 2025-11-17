@@ -191,8 +191,11 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
 
         self.immunity: float = immunity
 
+    def probability_to_infect(self):
+        return self.beta * self.is_infected()
+
     def got_exposed(self, event: EventData) -> bool:
-        neighbor_infect_p = sum(n.beta * n.is_infected() for n in self.neighbors)
-        adjusted_for_immunity = neighbor_infect_p * (1 - self.immunity)
+        neighbor_infect_probability = sum(n.probability_to_infect() for n in self.neighbors)
+        adjusted_for_immunity = neighbor_infect_probability * (1 - self.immunity)
         p = min([adjusted_for_immunity, 1.])
         return bool(np.random.binomial(n=1, p=p))
