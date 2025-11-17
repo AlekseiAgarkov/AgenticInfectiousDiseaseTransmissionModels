@@ -197,7 +197,6 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
         self.immunity_bounds_defined = all(immunity_bound is not None
                                            for immunity_bound
                                            in [self.immunity_lower_bound, self.immunity_upper_bound])
-        print(f"immunity_bounds_defined: {self.immunity_bounds_defined}")
         self.immunity: float = immunity
 
     def probability_to_infect(self):

@@ -2,6 +2,7 @@ import random
 from logging import Logger
 from typing import Type, Dict, List, Optional
 
+import numpy as np
 import pandas as pd
 import simpy
 from tqdm import tqdm
@@ -70,23 +71,40 @@ def configure_neighbors_simulation(log: Logger,
     return metrics_collector
 
 
-def configure_extended_neighbors_simulation(log: Logger,
-                                            environment: simpy.Environment,
-                                            agent_params: Dict,
-                                            neighbors_data: pd.DataFrame,
-                                            initially_infected: int,
-                                            initially_infected_indices: Optional[
-                                                List] = None) -> TransitionMetricsCollector:
+def configure_extended_neighbors_simulation(log: Logger, environment: simpy.Environment, agent_params: Dict,
+                                            neighbors_data: pd.DataFrame, initially_infected: int,
+                                            initially_infected_indices: Optional[List] = None,
+                                            immunity=1.0,
+                                            lowest_immunity: Optional[float] = None,
+                                            highest_immunity: Optional[float] = None) -> TransitionMetricsCollector:
     log.info("Initializing Metrics Collector")
     metrics_collector: TransitionMetricsCollector = TransitionMetricsCollector()
 
     log.info("Initializing Agents")
+    immunity_bounds_defined = all(immunity_bound is not None
+                                  for immunity_bound
+                                  in [lowest_immunity, highest_immunity])
+
+    log.info("Immunity bounds are" + ("" if immunity_bounds_defined else " not") + " defined")
+
     agents: Dict[int, SEIRNeighborsFSMExtended] = {}
     for n in tqdm(range(neighbors_data.shape[0])):
+
+        if not immunity_bounds_defined:
+            agent_immunity_lower_bound = None
+            agent_immunity_upper_bound = None
+        else:
+            mid_immunity = (highest_immunity - lowest_immunity) / 2
+            agent_immunity_lower_bound = round(np.random.uniform(low=lowest_immunity, high=mid_immunity), 2)
+            agent_immunity_upper_bound = round(np.random.uniform(low=mid_immunity, high=highest_immunity), 2)
+
         agents[n] = SEIRNeighborsFSMExtended(env=environment,
                                              metrics_collector=metrics_collector,
                                              name=n,
                                              **agent_params,
+                                             immunity=immunity,
+                                             immunity_lower_bound=agent_immunity_lower_bound,
+                                             immunity_upper_bound=agent_immunity_upper_bound,
                                              x=float(neighbors_data['x'].iloc[n]),
                                              y=float(neighbors_data['y'].iloc[n]))
 

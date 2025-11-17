@@ -13,6 +13,9 @@ random_seed = 42
 n_agents = 100
 sim_duration = 365
 initially_infected = 5
+lowest_immunity = 0.1
+highest_immunity = 1.0
+immunity = 1.0
 
 [agents]
 beta = 0.01

@@ -13,7 +13,7 @@ import simpy
 
 from metrics.collector import Metric
 from models.seir import SEIRNeighborsFSMAgent
-from models.simulation import configure_neighbors_simulation
+from models.simulation import configure_extended_neighbors_simulation
 from simulation_utils.logging import configure_logging
 from simulation_utils.time import msk_now, DATETIME_FORMAT
 
@@ -67,6 +67,9 @@ if __name__ == '__main__':
     N_AGENTS: int = args.n_agents or config['simulation']['n_agents']
     INITIALLY_INFECTED: int = args.initially_infected or config['simulation']['initially_infected']
     INITIALLY_INFECTED_INDICES: List[int] = config['simulation'].get('initially_infected_indices')
+    IMMUNITY: float = config['simulation'].get('immunity')
+    LOWEST_IMMUNITY: float = config['simulation'].get('lowest_immunity')
+    HIGHEST_IMMUNITY: float = config['simulation'].get('highest_immunity')
 
     assert N_AGENTS == NEIGHBORS_DATA.shape[0]
 
@@ -80,6 +83,9 @@ if __name__ == '__main__':
         "sim_duration": SIM_DURATION,
         "output_path": OUTPUT_PATH,
         "initially_infected": INITIALLY_INFECTED,
+        "immunity": IMMUNITY,
+        "lowest_immunity": LOWEST_IMMUNITY,
+        "highest_immunity": HIGHEST_IMMUNITY,
         **AGENT_PARAMS
     }
 
@@ -90,12 +96,15 @@ if __name__ == '__main__':
 
     random.seed(RANDOM_SEED)
     env = simpy.Environment()
-    metrics = configure_neighbors_simulation(log=log,
-                                             environment=env,
-                                             agent_params=AGENT_PARAMS,
-                                             neighbors_data=NEIGHBORS_DATA,
-                                             initially_infected=INITIALLY_INFECTED,
-                                             initially_infected_indices=INITIALLY_INFECTED_INDICES)
+    metrics = configure_extended_neighbors_simulation(log=log,
+                                                      environment=env,
+                                                      agent_params=AGENT_PARAMS,
+                                                      neighbors_data=NEIGHBORS_DATA,
+                                                      immunity=IMMUNITY,
+                                                      lowest_immunity=LOWEST_IMMUNITY,
+                                                      highest_immunity=HIGHEST_IMMUNITY,
+                                                      initially_infected=INITIALLY_INFECTED,
+                                                      initially_infected_indices=INITIALLY_INFECTED_INDICES)
 
     log.info(f"Running Simulation: {config['title']}")
     env.run(until=SIM_DURATION)
