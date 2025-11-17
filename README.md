@@ -166,7 +166,7 @@ adjusted for the purposes of the agent setup.
 
 Immunity function is implemented by [immunity_by_year_day](src%2Fmodels%2Fimmunity.py#25) function.
 Basically, it takes day of the year and outputs current immunity value. The lower the immunity the higher the chance
-to get infected and vice versa.
+to get infected and vice versa. Immunity is at lowest around beginning of the year and at highest at day 182.
 
 ![Immunity Modeling.png](docs%2Fimg%2Fimmunity%2FImmunity%20Modeling.png)
 
