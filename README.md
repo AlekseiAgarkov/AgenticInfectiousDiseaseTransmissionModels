@@ -137,6 +137,77 @@ Agent Parameters:
 * `t1`, Minimal Infected State Duration
 * `t2`, Maximal Infected State Duration
 
+## SEIR with Neighbors on a 2D Plane Simulator
+Simulator for SEIR with Neighbors on a 2D plane model is implemented in `seir_neighbors_sim.py`.
+It features neighbor interaction. Susceptible agents can transition to Exposed state only if their neighbors 
+are Infectious with a probability of $P=\beta*N_{infected}$, where $N_{infected}$ is a number of infected neighbors.
+
+Neighbors are preconfigured through `src/generators/neighbors.py` util.
+
+### Agent FSM Graph
+Agents come in two flavors:
+* SEIRNeighborsFSMAgent - Base implementation
+* SEIRNeighborsFSMExtended - Extended implementation
+
+SEIRNeighborsFSMAgent:
+![SEIRNeighborsFSMAgent.png](docs%2Fimg%2FSEIRNeighborsFSMAgent.png)
+
+SEIRNeighborsFSMExtended:
+![SEIRNeighborsFSMExtended.png](docs%2Fimg%2FSEIRNeighborsFSMExtended.png)
+
+### Metrics collection
+The simulator logs state transitions for every agent. Upon completion, the simulator outputs a CSV-file
+to an output location along with simulation parameters JSON.
+
+### Dynamic Immunity reference
+Dynamic immunity in `SEIRNeighborsFSMExtended` is modeled with Pascal's Limaçon function, 
+adjusted for the purposes of the agent setup. 
+
+Immunity function is implemented by [immunity_by_year_day](src%2Fmodels%2Fimmunity.py#25) function.
+Basically, it takes day of the year and outputs current immunity value. The lower the immunity the higher the chance
+to get infected and vice versa.
+
+![Immunity Modeling.png](docs%2Fimg%2Fimmunity%2FImmunity%20Modeling.png)
+
+See visualization and experiments in more detail in [ImmunityModeling.ipynb](analytics%2FImmunityModeling.ipynb).
+
+
+### CLI Argument Reference
+Usage example:
+```shell
+python seir_neighbors_sim.py -o simulation_data \
+-c configs/seir_neighbors_base.toml \
+-r 42 \
+-n 1000 \
+-t 365 \
+-b 0.025 \
+--e1 1 \
+--e2 3 \
+--t1 5 \
+--t2 14
+```
+
+Options:
+* `-h`, `--help` - show help message and exit
+
+Paths:
+*  `-o`, `--output_path` - Simulation data output folder
+*  `-c`, `--config_path` - Config path
+* `--neighbors_data_path` - Path to Neighbors Data 
+
+Simulation Parameters:
+* `-r`, `--random_seed` - Random seed
+* `-n`, `--n_agents` - Number of agents
+* `-t`, `--sim_duration` - Duration of Simulation, units
+* `-i`, `--initially_infected` - Number of initially infected agents
+
+Agent Parameters:
+* `-b`, `--beta` - Model parameter Beta
+* `e1`, Minimal Exposed State Duration
+* `e2`, Maximal Exposed State Duration
+* `t1`, Minimal Infected State Duration
+* `t2`, Maximal Infected State Duration
+
 ### Neighbors generator reference
 This utility generates a square plane and populates it with agents. Each agent is randomly assigned coordinates and 
 gets its neighbor assigned. Result is saved to a CSV file, with the following columns:
@@ -160,7 +231,7 @@ Resulting 2D plane with agents distributed and neighbors assigned is as follows
 
 The Neighbor map visualization tool is implemented in [neighbors.ipynb](analytics%2Fneighbors.ipynb).
 
-### CLI Argument Reference
+#### CLI Argument Reference
 Usage example:
 ```shell
 python src/generators/neighbors.py -o simulation_conditions_data/neighbors \
