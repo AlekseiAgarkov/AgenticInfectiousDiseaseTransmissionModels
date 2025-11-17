@@ -8,6 +8,7 @@ from transitions.extensions import GraphMachine
 
 from metrics.collector import TransitionMetricsCollector
 from models.agents import BaseAgent
+from models.immunity import immunity_by_year_day
 
 
 class SEIRFSMBase(BaseAgent):
@@ -176,7 +177,9 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
                  e2: int,
                  t1: int,
                  t2: int,
-                 immunity: float):
+                 immunity: float,
+                 immunity_lower_bound: Optional[float] = None,
+                 immunity_upper_bound: Optional[float] = None):
         super().__init__(env=env,
                          metrics_collector=metrics_collector,
                          name=name,
@@ -189,13 +192,27 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
                          t1=t1,
                          t2=t2)
 
+        self.immunity_lower_bound = immunity_lower_bound
+        self.immunity_upper_bound = immunity_upper_bound
+        self.immunity_bounds_defined = all(immunity_bound is not None
+                                           for immunity_bound
+                                           in [self.immunity_lower_bound, self.immunity_upper_bound])
+        print(f"immunity_bounds_defined: {self.immunity_bounds_defined}")
         self.immunity: float = immunity
 
     def probability_to_infect(self):
         return self.beta * self.is_infected()
 
+    def current_immunity(self, decimals: int = 2) -> float:
+        if not self.immunity_bounds_defined:
+            return self.immunity
+        else:
+            return round(immunity_by_year_day(day=self.env.now,
+                                              low=self.immunity_lower_bound,
+                                              high=self.immunity_upper_bound), decimals)
+
     def got_exposed(self, event: EventData) -> bool:
         neighbor_infect_probability = sum(n.probability_to_infect() for n in self.neighbors)
-        adjusted_for_immunity = neighbor_infect_probability * (1 - self.immunity)
+        adjusted_for_immunity = neighbor_infect_probability * (1 - self.current_immunity())
         p = min([adjusted_for_immunity, 1.])
         return bool(np.random.binomial(n=1, p=p))

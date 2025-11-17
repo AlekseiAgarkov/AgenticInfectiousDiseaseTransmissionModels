@@ -189,3 +189,40 @@ class SEIRNeighborsFSMExtendedTests(TestCase):
                 break
 
         assert test_agent.state == 'exposed', "Test is probabilistic, please retry"
+
+    def test_try_get_exposed_bounded_immunity_low(self):
+        immunity = 1.0
+        immunity_lower_bound = 0.0
+        immunity_upper_bound = 1.0
+        test_agent = SEIRNeighborsFSMExtended(**{**self.seir_params,
+                                                 "name": "test_agent",
+                                                 "immunity": immunity,
+                                                 "immunity_lower_bound": immunity_lower_bound,
+                                                 "immunity_upper_bound": immunity_upper_bound})
+
+        test_agent.set_neighbors(neighbors=[self.highly_infective_neighbor])
+
+        assert test_agent.current_immunity() == immunity_lower_bound
+        assert test_agent.current_immunity() != immunity
+        test_agent.try_get_exposed()
+        assert test_agent.state == 'exposed'
+
+    def test_try_get_exposed_bounded_immunity_high(self):
+        env = MagicMock()
+        env.now = 182
+        immunity = 0.0
+        immunity_lower_bound = 0.0
+        immunity_upper_bound = 1.0
+        test_agent = SEIRNeighborsFSMExtended(**{**self.seir_params,
+                                                 "name": "test_agent",
+                                                 "immunity": immunity,
+                                                 "immunity_lower_bound": immunity_lower_bound,
+                                                 "immunity_upper_bound": immunity_upper_bound,
+                                                 "env": env})
+
+        test_agent.set_neighbors(neighbors=[self.highly_infective_neighbor])
+
+        assert test_agent.current_immunity() == immunity_upper_bound
+        assert test_agent.current_immunity() != immunity
+        test_agent.try_get_exposed()
+        assert test_agent.state == 'susceptible'
