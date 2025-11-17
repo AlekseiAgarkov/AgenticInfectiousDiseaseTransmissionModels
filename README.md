@@ -159,8 +159,9 @@ SEIRNeighborsFSMExtended:
 The simulator logs state transitions for every agent. Upon completion, the simulator outputs a CSV-file
 to an output location along with simulation parameters JSON.
 
-### Dynamic Immunity reference
-Dynamic immunity in `SEIRNeighborsFSMExtended` is modeled with Pascal's Limaçon function, 
+### Dynamic Immunity
+Dynamic immunity in `SEIRNeighborsFSMExtended` is modeled 
+with [Pascal's Limaçon](https://en.wikipedia.org/wiki/Lima%C3%A7on) function, 
 adjusted for the purposes of the agent setup. 
 
 Immunity function is implemented by [immunity_by_year_day](src%2Fmodels%2Fimmunity.py#25) function.
