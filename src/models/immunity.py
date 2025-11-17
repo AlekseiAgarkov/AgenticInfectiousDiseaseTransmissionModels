@@ -22,7 +22,7 @@ def pascals_snail_day_mapping(day):
     return r
 
 
-def immunity_by_year_day(day, output_low=0.0, output_high=1.0):
+def immunity_by_year_day(day, low=0.0, high=1.0):
     """
     Map day number to Pascal's Snail value scaled to arbitrary range.
 
@@ -39,6 +39,6 @@ def immunity_by_year_day(day, output_low=0.0, output_high=1.0):
 
     # Rescale from [1, 3] to [output_low, output_high]
     input_min, input_max = 1.0, 3.0
-    scaled_value = output_low + (raw_value - input_min) * (output_high - output_low) / (input_max - input_min)
+    scaled_value = low + (raw_value - input_min) * (high - low) / (input_max - input_min)
 
     return scaled_value

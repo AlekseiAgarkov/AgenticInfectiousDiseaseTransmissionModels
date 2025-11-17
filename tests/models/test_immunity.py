@@ -10,7 +10,7 @@ class ImmunityTests(TestCase):
         expected_results = [0.0, 0.07, 0.5, 1.0, 0.51, 0.07, 0.0]
         results = []
         for day in self.test_days:
-            immunity = immunity_by_year_day(day=day, output_low=0.0, output_high=1.0)
+            immunity = immunity_by_year_day(day=day, low=0.0, high=1.0)
             results.append(immunity)
 
         results = [round(r, 2) for r in results]
@@ -21,7 +21,7 @@ class ImmunityTests(TestCase):
         expected_results = [0.0, 0.07, 0.5, 1.0, 0.51, 0.07, 0.0]
         results = []
         for day in self.test_days:
-            immunity = immunity_by_year_day(day=day+365, output_low=0.0, output_high=1.0)
+            immunity = immunity_by_year_day(day=day+365, low=0.0, high=1.0)
             results.append(immunity)
 
         results = [round(r, 2) for r in results]
@@ -32,7 +32,7 @@ class ImmunityTests(TestCase):
         expected_results = [0.2, 0.24, 0.5, 0.8, 0.5, 0.24, 0.2]
         results = []
         for day in self.test_days:
-            immunity = immunity_by_year_day(day=day, output_low=0.2, output_high=0.8)
+            immunity = immunity_by_year_day(day=day, low=0.2, high=0.8)
             results.append(immunity)
 
         results = [round(r, 2) for r in results]
