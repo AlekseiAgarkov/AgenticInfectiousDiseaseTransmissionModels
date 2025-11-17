@@ -26,6 +26,7 @@ if __name__ == '__main__':
     min_coord, max_coord = 0, args.size
     agents_number = args.agents_number
 
+    np.random.seed(args.random_seed)
     x_coords = np.random.uniform(low=min_coord, high=max_coord, size=agents_number).round(decimals=2)
     y_coords = np.random.uniform(low=min_coord, high=max_coord, size=agents_number).round(decimals=2)
     coords = np.column_stack((x_coords, y_coords))
