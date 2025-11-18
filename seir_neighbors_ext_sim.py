@@ -67,7 +67,6 @@ if __name__ == '__main__':
     N_AGENTS: int = args.n_agents or config['simulation']['n_agents']
     INITIALLY_INFECTED: int = args.initially_infected or config['simulation']['initially_infected']
     INITIALLY_INFECTED_INDICES: List[int] = config['simulation'].get('initially_infected_indices')
-    IMMUNITY: float = config['simulation'].get('immunity')
     LOWEST_IMMUNITY: float = config['simulation'].get('lowest_immunity')
     HIGHEST_IMMUNITY: float = config['simulation'].get('highest_immunity')
 
@@ -83,7 +82,6 @@ if __name__ == '__main__':
         "sim_duration": SIM_DURATION,
         "output_path": OUTPUT_PATH,
         "initially_infected": INITIALLY_INFECTED,
-        "immunity": IMMUNITY,
         "lowest_immunity": LOWEST_IMMUNITY,
         "highest_immunity": HIGHEST_IMMUNITY,
         **AGENT_PARAMS
@@ -100,7 +98,6 @@ if __name__ == '__main__':
                                                       environment=env,
                                                       agent_params=AGENT_PARAMS,
                                                       neighbors_data=NEIGHBORS_DATA,
-                                                      immunity=IMMUNITY,
                                                       lowest_immunity=LOWEST_IMMUNITY,
                                                       highest_immunity=HIGHEST_IMMUNITY,
                                                       initially_infected=INITIALLY_INFECTED,

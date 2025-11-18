@@ -75,41 +75,29 @@ def configure_neighbors_simulation(log: Logger,
 def configure_extended_neighbors_simulation(log: Logger, environment: simpy.Environment, agent_params: Dict,
                                             neighbors_data: pd.DataFrame, initially_infected: int,
                                             initially_infected_indices: Optional[List] = None,
-                                            immunity=1.0,
                                             lowest_immunity: Optional[float] = None,
                                             highest_immunity: Optional[float] = None) -> TransitionMetricsCollector:
     log.info("Initializing Metrics Collector")
     metrics_collector: TransitionMetricsCollector = TransitionMetricsCollector()
 
     log.info("Initializing Agents")
-    immunity_bounds_defined = all(immunity_bound is not None
-                                  for immunity_bound
-                                  in [lowest_immunity, highest_immunity])
-
-    log.info("Immunity bounds are" + ("" if immunity_bounds_defined else " not") + " defined")
 
     agents: Dict[int, SEIRNeighborsFSMExtended] = {}
     for n in tqdm(range(neighbors_data.shape[0])):
-
         age = np.random.randint(low=0, high=90)
         immunity_by_reduction_factor = 0.0 if 12 <= age <= 60 else 0.1
 
-        if not immunity_bounds_defined:
-            agent_immunity_lower_bound = None
-            agent_immunity_upper_bound = None
-        else:
-            (agent_immunity_lower_bound,
-             agent_immunity_upper_bound) = adjust_immunity_by_mid_proportional(
-                lowest_immunity=lowest_immunity,
-                highest_immunity=highest_immunity,
-                reduction_factor=immunity_by_reduction_factor)
+        (agent_immunity_lower_bound,
+         agent_immunity_upper_bound) = adjust_immunity_by_mid_proportional(
+            lowest_immunity=lowest_immunity,
+            highest_immunity=highest_immunity,
+            reduction_factor=immunity_by_reduction_factor)
 
         agents[n] = SEIRNeighborsFSMExtended(env=environment,
                                              metrics_collector=metrics_collector,
                                              name=n,
                                              **agent_params,
                                              age=age,
-                                             immunity=immunity,
                                              immunity_lower_bound=agent_immunity_lower_bound,
                                              immunity_upper_bound=agent_immunity_upper_bound,
                                              x=float(neighbors_data['x'].iloc[n]),

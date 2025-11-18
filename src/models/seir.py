@@ -178,7 +178,6 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
                  t1: int,
                  t2: int,
                  age: int,
-                 immunity: float,
                  immunity_lower_bound: Optional[float] = None,
                  immunity_upper_bound: Optional[float] = None):
         super().__init__(env=env,
@@ -196,21 +195,14 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
         self.age = age
         self.immunity_lower_bound = immunity_lower_bound
         self.immunity_upper_bound = immunity_upper_bound
-        self.immunity_bounds_defined = all(immunity_bound is not None
-                                           for immunity_bound
-                                           in [self.immunity_lower_bound, self.immunity_upper_bound])
-        self.immunity: float = immunity
 
     def probability_to_infect(self):
         return self.beta * self.is_infected()
 
     def current_immunity(self, decimals: int = 2) -> float:
-        if not self.immunity_bounds_defined:
-            return self.immunity
-        else:
-            return round(immunity_by_year_day(day=self.env.now,
-                                              low=self.immunity_lower_bound,
-                                              high=self.immunity_upper_bound), decimals)
+        return round(immunity_by_year_day(day=self.env.now,
+                                          low=self.immunity_lower_bound,
+                                          high=self.immunity_upper_bound), decimals)
 
     def got_exposed(self, event: EventData) -> bool:
         neighbor_infect_probability = sum(n.probability_to_infect() for n in self.neighbors)
