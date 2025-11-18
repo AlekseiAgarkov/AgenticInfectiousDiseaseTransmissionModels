@@ -177,6 +177,7 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
                  e2: int,
                  t1: int,
                  t2: int,
+                 age: int,
                  immunity: float,
                  immunity_lower_bound: Optional[float] = None,
                  immunity_upper_bound: Optional[float] = None):
@@ -192,6 +193,7 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
                          t1=t1,
                          t2=t2)
 
+        self.age = age
         self.immunity_lower_bound = immunity_lower_bound
         self.immunity_upper_bound = immunity_upper_bound
         self.immunity_bounds_defined = all(immunity_bound is not None

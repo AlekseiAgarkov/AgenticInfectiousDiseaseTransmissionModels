@@ -9,6 +9,7 @@ from tqdm import tqdm
 
 from metrics.collector import StateCountMetricsCollector, TransitionMetricsCollector
 from models.agents import BaseAgent
+from models.immunity import adjust_immunity_by_mid_proportional
 from models.seir import SEIRNeighborsFSMAgent, SEIRNeighborsFSMExtended
 
 
@@ -90,18 +91,24 @@ def configure_extended_neighbors_simulation(log: Logger, environment: simpy.Envi
     agents: Dict[int, SEIRNeighborsFSMExtended] = {}
     for n in tqdm(range(neighbors_data.shape[0])):
 
+        age = np.random.randint(low=0, high=90)
+        immunity_by_reduction_factor = 0.0 if 12 <= age <= 60 else 0.1
+
         if not immunity_bounds_defined:
             agent_immunity_lower_bound = None
             agent_immunity_upper_bound = None
         else:
-            mid_immunity = (highest_immunity - lowest_immunity) / 2
-            agent_immunity_lower_bound = round(np.random.uniform(low=lowest_immunity, high=mid_immunity), 2)
-            agent_immunity_upper_bound = round(np.random.uniform(low=mid_immunity, high=highest_immunity), 2)
+            (agent_immunity_lower_bound,
+             agent_immunity_upper_bound) = adjust_immunity_by_mid_proportional(
+                lowest_immunity=lowest_immunity,
+                highest_immunity=highest_immunity,
+                reduction_factor=immunity_by_reduction_factor)
 
         agents[n] = SEIRNeighborsFSMExtended(env=environment,
                                              metrics_collector=metrics_collector,
                                              name=n,
                                              **agent_params,
+                                             age=age,
                                              immunity=immunity,
                                              immunity_lower_bound=agent_immunity_lower_bound,
                                              immunity_upper_bound=agent_immunity_upper_bound,

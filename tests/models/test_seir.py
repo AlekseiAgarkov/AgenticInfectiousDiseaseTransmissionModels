@@ -1,6 +1,8 @@
 from unittest import TestCase
 from unittest.mock import MagicMock
 
+import numpy as np
+
 from metrics.collector import TransitionMetricsCollector
 from models.seir import SEIRFSMBase, SEIRClassicFSMAgent, SEIRNeighborsFSMAgent, SEIRNeighborsFSMExtended
 
@@ -149,6 +151,7 @@ class SEIRNeighborsFSMExtendedTests(TestCase):
                                 e2=0,
                                 t1=0,
                                 t2=0,
+                                age=np.random.randint(low=0, high=90),
                                 metrics_collector=self.metrics_collector)
         self.highly_infective_neighbor = SEIRNeighborsFSMExtended(**{**self.seir_params,
                                                                      "beta": 1.0,

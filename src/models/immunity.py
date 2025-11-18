@@ -1,5 +1,7 @@
 import math
 
+import numpy as np
+
 
 def pascals_snail_day_mapping(day):
     """
@@ -42,3 +44,17 @@ def immunity_by_year_day(day, low=0.0, high=1.0):
     scaled_value = low + (raw_value - input_min) * (high - low) / (input_max - input_min)
 
     return scaled_value
+
+
+def adjust_immunity_by_mid_proportional(lowest_immunity, highest_immunity, reduction_factor=0.0):
+    mid_immunity = (highest_immunity - lowest_immunity) / 2
+    mid_immunity_adj = mid_immunity - reduction_factor
+
+    bottom_lb = min([lowest_immunity, mid_immunity_adj])
+    mid = max([lowest_immunity, mid_immunity_adj])
+    top_ub = max([mid_immunity_adj, highest_immunity - reduction_factor])
+
+    low = round(np.random.uniform(low=bottom_lb, high=mid), 2)
+    high = round(np.random.uniform(low=mid, high=top_ub), 2)
+
+    return low, high
