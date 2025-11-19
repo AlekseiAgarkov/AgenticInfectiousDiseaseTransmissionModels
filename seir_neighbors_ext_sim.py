@@ -90,6 +90,7 @@ if __name__ == '__main__':
         "initially_infected": INITIALLY_INFECTED,
         "lowest_immunity": LOWEST_IMMUNITY,
         "highest_immunity": HIGHEST_IMMUNITY,
+        "age_params": AGE_PARAMS,
         **AGENT_PARAMS
     }
 
