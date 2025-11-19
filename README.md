@@ -172,6 +172,16 @@ to get infected and vice versa. Immunity is at lowest around beginning of the ye
 
 See visualization and experiments in more detail in [ImmunityModeling.ipynb](analytics%2FImmunityModeling.ipynb).
 
+### Age sampling and immunity adjustment
+[Extended SEIR Simulation](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/src/models/simulation.py#L92) at 
+agent configuration stage [samples age](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/src/models/simulation.py#L92)
+and updates [lower](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/configs/seir_neighbors_ext_test.toml#L16) and [upper](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/configs/seir_neighbors_ext_test.toml#L17) 
+global immunity boundaries with age-dependent [immunity reduction factor](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/configs/seir_neighbors_ext_test.toml#L29)
+with [adjust_immunity_by_mid_proportional](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/src/models/immunity.py#L49) function.
+
+Age is sampled in two steps:
+1. Age range is sampled from [age ranges](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/configs/seir_neighbors_ext_test.toml#L27) by [range-assigned probability](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/configs/seir_neighbors_ext_test.toml#L28) as defined in [age section of config](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/configs/seir_neighbors_ext_test.toml#L26).
+2. Age is randomly sample from uniform distribution between lower and upper bracket of age range sampled at previous step.
 
 ### CLI Argument Reference
 Usage example:
