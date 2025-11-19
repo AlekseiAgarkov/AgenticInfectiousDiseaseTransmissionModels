@@ -164,7 +164,7 @@ Dynamic immunity in `SEIRNeighborsFSMExtended` is modeled
 with [Pascal's Limaçon](https://en.wikipedia.org/wiki/Lima%C3%A7on) function, 
 adjusted for the purposes of the agent setup. 
 
-Immunity function is implemented by [immunity_by_year_day](src%2Fmodels%2Fimmunity.py#25) function.
+Immunity function is implemented by [immunity_by_year_day](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/src%2Fmodels%2Fimmunity.py#L27) function.
 Basically, it takes day of the year and outputs current immunity value. The lower the immunity the higher the chance
 to get infected and vice versa. Immunity is at lowest around beginning of the year and at highest at day 182.
 
