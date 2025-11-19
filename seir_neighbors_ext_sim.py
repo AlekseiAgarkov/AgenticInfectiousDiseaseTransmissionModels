@@ -72,6 +72,12 @@ if __name__ == '__main__':
 
     assert N_AGENTS == NEIGHBORS_DATA.shape[0]
 
+    AGE_PARAMS: dict = {
+        "age_ranges": config['age'].get('age_ranges'),
+        "age_probs": config['age'].get('age_probs'),
+        "immunity_reduction_factors": config['age'].get('immunity_reduction_factors'),
+    }
+
     SIM_DURATION: int = args.sim_duration or config['simulation']['sim_duration']
     OUTPUT_PATH: str = args.output_path or config['paths']['output_path']
     LOG_OUTPUT: str = f'{config['paths']['log_output']}/{SIMULATOR_NAME}_Log-{simulation_start_str}.log'
@@ -100,6 +106,7 @@ if __name__ == '__main__':
                                                       neighbors_data=NEIGHBORS_DATA,
                                                       lowest_immunity=LOWEST_IMMUNITY,
                                                       highest_immunity=HIGHEST_IMMUNITY,
+                                                      age_params=AGE_PARAMS,
                                                       initially_infected=INITIALLY_INFECTED,
                                                       initially_infected_indices=INITIALLY_INFECTED_INDICES)
 

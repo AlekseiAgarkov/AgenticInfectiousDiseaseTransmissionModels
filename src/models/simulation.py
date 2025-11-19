@@ -8,6 +8,7 @@ import simpy
 from tqdm import tqdm
 
 from metrics.collector import StateCountMetricsCollector, TransitionMetricsCollector
+from models.age import sample_age
 from models.agents import BaseAgent
 from models.immunity import adjust_immunity_by_mid_proportional
 from models.seir import SEIRNeighborsFSMAgent, SEIRNeighborsFSMExtended
@@ -72,8 +73,12 @@ def configure_neighbors_simulation(log: Logger,
     return metrics_collector
 
 
-def configure_extended_neighbors_simulation(log: Logger, environment: simpy.Environment, agent_params: Dict,
-                                            neighbors_data: pd.DataFrame, initially_infected: int,
+def configure_extended_neighbors_simulation(log: Logger,
+                                            environment: simpy.Environment,
+                                            agent_params: Dict,
+                                            neighbors_data: pd.DataFrame,
+                                            initially_infected: int,
+                                            age_params: dict,
                                             initially_infected_indices: Optional[List] = None,
                                             lowest_immunity: Optional[float] = None,
                                             highest_immunity: Optional[float] = None) -> TransitionMetricsCollector:
@@ -84,8 +89,9 @@ def configure_extended_neighbors_simulation(log: Logger, environment: simpy.Envi
 
     agents: Dict[int, SEIRNeighborsFSMExtended] = {}
     for n in tqdm(range(neighbors_data.shape[0])):
-        age = np.random.randint(low=0, high=90)
-        immunity_by_reduction_factor = 0.0 if 12 <= age <= 60 else 0.1
+        age_range_key, age = sample_age(age_ranges=age_params['age_ranges'],
+                                        age_probs=age_params['age_probs'])
+        immunity_by_reduction_factor = age_params['immunity_reduction_factors'][age_range_key]
 
         (agent_immunity_lower_bound,
          agent_immunity_upper_bound) = adjust_immunity_by_mid_proportional(
