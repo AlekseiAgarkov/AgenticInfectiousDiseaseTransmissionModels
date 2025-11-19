@@ -47,13 +47,23 @@ def immunity_by_year_day(day, low=0.0, high=1.0):
 
 
 def adjust_immunity_by_mid_proportional(lowest_immunity, highest_immunity, reduction_factor=0.0):
+    """
+    Adjust the lowest_immunity and highest_immunity by age specific reduction_factor.
+    :param lowest_immunity: global lowest immunity bound
+    :param highest_immunity: global highest immunity bound
+    :param reduction_factor: age specific reduction_factor
+    :return: Age adjusted immunity ranges
+    """
+    # Calculate middle and adjusted by reduction factor middle of immunity range
     mid_immunity = (highest_immunity - lowest_immunity) / 2
     mid_immunity_adj = mid_immunity - reduction_factor
 
+    # Define bottom lowest bound, mid and upper bounds for immunity ranges sampling
     bottom_lb = min([lowest_immunity, mid_immunity_adj])
     mid = max([lowest_immunity, mid_immunity_adj])
     top_ub = max([mid_immunity_adj, highest_immunity - reduction_factor])
 
+    # Sample low and high immunity range bounds
     low = round(np.random.uniform(low=bottom_lb, high=mid), 2)
     high = round(np.random.uniform(low=mid, high=top_ub), 2)
 
