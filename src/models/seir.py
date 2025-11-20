@@ -178,8 +178,8 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
                  t1: int,
                  t2: int,
                  age: int,
-                 immunity_lower_bound: Optional[float] = None,
-                 immunity_upper_bound: Optional[float] = None):
+                 immunity_lower_bound: float = 0.0,
+                 immunity_upper_bound: float = 1.0):
         super().__init__(env=env,
                          metrics_collector=metrics_collector,
                          name=name,
