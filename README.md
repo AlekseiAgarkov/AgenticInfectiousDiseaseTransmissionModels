@@ -108,7 +108,10 @@ SEIRNeighborsFSMExtended:
 The simulator logs state transitions for every agent. Upon completion, the simulator outputs a CSV-file
 to an output location along with simulation parameters JSON.
 
-### Dynamic Immunity
+### Extensions
+Extensions are implemented in `SEIRNeighborsFSMExtended`.
+
+#### Dynamic Immunity
 Dynamic immunity in `SEIRNeighborsFSMExtended` is modeled via [Pascal's Limaçon](https://en.wikipedia.org/wiki/Lima%C3%A7on) function, 
 adjusted for the purposes of the agent setup. 
 
@@ -120,7 +123,7 @@ to get infected and vice versa. Immunity is at lowest around beginning of the ye
 
 See visualization and experiments in more detail in [ImmunityModeling.ipynb](analytics%2FImmunityModeling.ipynb).
 
-### Age sampling and immunity adjustment
+#### Age sampling and immunity adjustment
 [Extended SEIR Simulation](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/src/models/simulation.py#L92) at 
 agent configuration stage [samples age](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/src/models/simulation.py#L92)
 and updates [lower](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/configs/seir_neighbors_ext_test.toml#L16) and [upper](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/configs/seir_neighbors_ext_test.toml#L17) 
