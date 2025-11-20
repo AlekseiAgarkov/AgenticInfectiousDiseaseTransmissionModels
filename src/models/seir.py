@@ -202,7 +202,7 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
         self.immunity_upper_bound = immunity_upper_bound
 
     def probability_to_infect(self):
-        return self.beta * self.is_infected() * (1.0 - self.mask_beta_penalty)
+        return self.beta * self.is_infected()
 
     def current_immunity(self, decimals: int = 2) -> float:
         return round(immunity_by_year_day(day=self.env.now,
