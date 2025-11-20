@@ -73,15 +73,14 @@ def configure_neighbors_simulation(log: Logger,
     return metrics_collector
 
 
-def configure_extended_neighbors_simulation(log: Logger,
-                                            environment: simpy.Environment,
-                                            agent_params: Dict,
-                                            neighbors_data: pd.DataFrame,
-                                            initially_infected: int,
-                                            age_params: dict,
-                                            initially_infected_indices: Optional[List] = None,
-                                            lowest_immunity: Optional[float] = None,
-                                            highest_immunity: Optional[float] = None) -> TransitionMetricsCollector:
+def configure_extended_neighbors_simulation(
+        log: Logger, environment: simpy.Environment,
+        agent_params: Dict,
+        neighbors_data: pd.DataFrame,
+        initially_infected: int,
+        age_params: Dict,
+        immunity_params: Dict,
+        initially_infected_indices: Optional[List] = None) -> TransitionMetricsCollector:
     log.info("Initializing Metrics Collector")
     metrics_collector: TransitionMetricsCollector = TransitionMetricsCollector()
 
@@ -95,9 +94,12 @@ def configure_extended_neighbors_simulation(log: Logger,
 
         (agent_immunity_lower_bound,
          agent_immunity_upper_bound) = adjust_immunity_by_mid_proportional(
-            lowest_immunity=lowest_immunity,
-            highest_immunity=highest_immunity,
+            lowest_immunity=immunity_params['lowest_immunity'],
+            highest_immunity=immunity_params['highest_immunity'],
             reduction_factor=immunity_by_reduction_factor)
+
+        wears_mask_at_contact_p = np.random.uniform(low=immunity_params['mask_discipline_worst'],
+                                                    high=immunity_params['mask_discipline_best'])
 
         agents[n] = SEIRNeighborsFSMExtended(env=environment,
                                              metrics_collector=metrics_collector,
@@ -106,6 +108,8 @@ def configure_extended_neighbors_simulation(log: Logger,
                                              age=age,
                                              immunity_lower_bound=agent_immunity_lower_bound,
                                              immunity_upper_bound=agent_immunity_upper_bound,
+                                             mask_beta_penalty=immunity_params['mask_beta_penalty'],
+                                             wears_mask_at_contact_p=wears_mask_at_contact_p,
                                              x=float(neighbors_data['x'].iloc[n]),
                                              y=float(neighbors_data['y'].iloc[n]))
 

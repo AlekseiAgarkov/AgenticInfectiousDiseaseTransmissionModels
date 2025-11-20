@@ -13,8 +13,6 @@ random_seed = 42
 n_agents = 100
 sim_duration = 365
 initially_infected = 5
-lowest_immunity = 0.1
-highest_immunity = 1.0
 
 [agents]
 beta = 0.01
@@ -22,6 +20,13 @@ e1 = 1
 e2 = 3
 t1 = 7
 t2 = 14
+
+[immunity]
+lowest_immunity = 0.1
+highest_immunity = 1.0
+mask_beta_penalty = 0.75
+mask_discipline_worst = 0.0
+mask_discipline_best = 0.75
 
 [age]
 age_ranges = { 0 = [0, 9], 1 = [10, 19], 2 = [20, 29], 3 = [30, 39], 4 = [40, 49], 5 = [50, 59], 6 = [60, 69], 7 = [70, 79], 8 = [80, 89], 9 = [90, 100] }

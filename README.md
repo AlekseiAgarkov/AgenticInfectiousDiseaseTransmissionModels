@@ -134,6 +134,23 @@ Age is sampled in two steps:
 1. Age range is sampled from [age ranges](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/configs/seir_neighbors_ext_test.toml#L27) by [range-assigned probability](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/configs/seir_neighbors_ext_test.toml#L28) as defined in [age section of config](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/configs/seir_neighbors_ext_test.toml#L26).
 2. Age is randomly sample from uniform distribution between lower and upper bracket of age range sampled at previous step.
 
+#### Mask Discipline
+Agents may wear masks. Masks decrease probability of an agent to infect their neighbors.
+
+Probability to infect neighbors depends on the probability of wearing a mask at contact and a beta penalty factor for 
+wearing a mask:
+
+$$P_{to\_infect}(A_i(t))=\beta_{A_i} \cdot I_{A}(t) \cdot (1 - M_{\beta\ penalty} \cdot M(A_i(t)),\ \beta_{A_i} \in [0, 1], \ I_{A}(t) \in \mathbb{B},\ M_{penalty} \in [0, 1],\ M(A_i(t)) \in \mathbb{B}$$
+
+- $P_{to\_infect}(A_i(t))$ - Probability for Agent $i$ to infect neighbor agents at time $t$
+- $\beta_{A_i}$ - $\beta$ parameter for Agent $i$
+- $I_{A}(t)$ - Infection status, i.e. if Agent $i$ is infected or not
+- $M_{\beta\ penalty}$ - $\beta$ penalty for wearing a mask, i.e. how well a mask decreases $\beta$
+- $M(A_i(t))$ - whether Agent $i$ is wearing a mask at time $t$
+
+Mask wearing discipline is defined in the config as a range for population. Every agent is assigned their own 
+'discipline' - probability of wearing a mask on contact with neighboring agent. 
+
 ### CLI Argument Reference
 #### SEIRNeighborsFSMAgent
 Usage example:

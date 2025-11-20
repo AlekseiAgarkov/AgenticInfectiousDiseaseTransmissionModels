@@ -67,10 +67,22 @@ if __name__ == '__main__':
     N_AGENTS: int = args.n_agents or config['simulation']['n_agents']
     INITIALLY_INFECTED: int = args.initially_infected or config['simulation']['initially_infected']
     INITIALLY_INFECTED_INDICES: List[int] = config['simulation'].get('initially_infected_indices')
-    LOWEST_IMMUNITY: float = config['simulation'].get('lowest_immunity')
-    HIGHEST_IMMUNITY: float = config['simulation'].get('highest_immunity')
+
+    LOWEST_IMMUNITY: float = config['immunity'].get('lowest_immunity')
+    HIGHEST_IMMUNITY: float = config['immunity'].get('highest_immunity')
+    MASK_BETA_PENALTY: float = config['immunity'].get('mask_beta_penalty')
+    MASK_DISCIPLINE_WORST: float = config['immunity'].get('mask_discipline_worst')
+    MASK_DISCIPLINE_BEST: float = config['immunity'].get('mask_discipline_best')
 
     assert N_AGENTS == NEIGHBORS_DATA.shape[0]
+
+    IMMUNITY_PARAMS = {
+        "lowest_immunity": LOWEST_IMMUNITY,
+        "highest_immunity": HIGHEST_IMMUNITY,
+        "mask_beta_penalty": MASK_BETA_PENALTY,
+        "mask_discipline_worst": MASK_DISCIPLINE_WORST,
+        "mask_discipline_best": MASK_DISCIPLINE_BEST
+    }
 
     AGE_PARAMS: dict = {
         "age_ranges": config['age'].get('age_ranges'),
@@ -88,9 +100,8 @@ if __name__ == '__main__':
         "sim_duration": SIM_DURATION,
         "output_path": OUTPUT_PATH,
         "initially_infected": INITIALLY_INFECTED,
-        "lowest_immunity": LOWEST_IMMUNITY,
-        "highest_immunity": HIGHEST_IMMUNITY,
         "age_params": AGE_PARAMS,
+        "immunity_params": IMMUNITY_PARAMS,
         **AGENT_PARAMS
     }
 
@@ -105,8 +116,7 @@ if __name__ == '__main__':
                                                       environment=env,
                                                       agent_params=AGENT_PARAMS,
                                                       neighbors_data=NEIGHBORS_DATA,
-                                                      lowest_immunity=LOWEST_IMMUNITY,
-                                                      highest_immunity=HIGHEST_IMMUNITY,
+                                                      immunity_params=IMMUNITY_PARAMS,
                                                       age_params=AGE_PARAMS,
                                                       initially_infected=INITIALLY_INFECTED,
                                                       initially_infected_indices=INITIALLY_INFECTED_INDICES)

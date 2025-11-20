@@ -178,6 +178,8 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
                  t1: int,
                  t2: int,
                  age: int,
+                 wears_mask_at_contact_p: float = 0.5,
+                 mask_beta_penalty: float = 0.0,
                  immunity_lower_bound: float = 0.0,
                  immunity_upper_bound: float = 1.0):
         super().__init__(env=env,
@@ -194,6 +196,11 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
 
         self.age = age
 
+        assert 0 <= mask_beta_penalty <= 1.0
+        assert 0 <= wears_mask_at_contact_p <= 1.0
+        self.mask_beta_penalty = mask_beta_penalty
+        self.wears_mask_at_contact_p = wears_mask_at_contact_p
+
         assert 0.0 <= immunity_lower_bound <= 1.0
         assert 0.0 <= immunity_upper_bound <= 1.0
         assert immunity_lower_bound <= immunity_upper_bound
@@ -202,7 +209,8 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
         self.immunity_upper_bound = immunity_upper_bound
 
     def probability_to_infect(self):
-        return self.beta * self.is_infected()
+        wears_mask_at_contact: int = np.random.binomial(n=1, p=self.wears_mask_at_contact_p)
+        return self.beta * self.is_infected() * (1.0 - self.mask_beta_penalty * wears_mask_at_contact)
 
     def current_immunity(self, decimals: int = 2) -> float:
         return round(immunity_by_year_day(day=self.env.now,

@@ -1,3 +1,4 @@
+from copy import deepcopy
 from unittest import TestCase
 from unittest.mock import MagicMock
 
@@ -235,3 +236,58 @@ class SEIRNeighborsFSMExtendedTests(TestCase):
         assert test_agent.current_immunity() == immunity_upper_bound
         test_agent.try_get_exposed()
         assert test_agent.state == 'susceptible'
+
+    def test_mask_beta_penalty(self):
+        env = MagicMock()
+        env.now = 0
+
+        test_agent = SEIRNeighborsFSMExtended(**{**self.seir_params,
+                                                 "name": "test_agent",
+                                                 "immunity_lower_bound": 0.0,
+                                                 "immunity_upper_bound": 0.0,
+                                                 "env": env})
+
+        highly_infective_neighbor_heavily_masked = deepcopy(self.highly_infective_neighbor)
+        highly_infective_neighbor_heavily_masked.mask_beta_penalty = 1.0
+        highly_infective_neighbor_heavily_masked.wears_mask_at_contact_p = 1.0
+        test_agent.set_neighbors(neighbors=[highly_infective_neighbor_heavily_masked])
+
+        assert highly_infective_neighbor_heavily_masked.beta == 1.0
+        assert highly_infective_neighbor_heavily_masked.probability_to_infect() == 0.0
+        assert test_agent.current_immunity() == 0.0
+        test_agent.try_get_exposed()
+        assert test_agent.state == 'susceptible'
+
+    def test_wears_mask_always(self):
+        test_agent = SEIRNeighborsFSMExtended(**{**self.seir_params,
+                                                 "name": "test_agent",
+                                                 "beta": 1.0,
+                                                 "wears_mask_at_contact_p": 1.0,
+                                                 "mask_beta_penalty": 1.0})
+        test_agent.to_infected()
+        assert test_agent.state == 'infected'
+
+        assert test_agent.probability_to_infect() == 0.0
+
+    def test_wears_mask_sometimes(self):
+        test_agent = SEIRNeighborsFSMExtended(**{**self.seir_params,
+                                                 "name": "test_agent",
+                                                 "beta": 1.0,
+                                                 "wears_mask_at_contact_p": 0.5,
+                                                 "mask_beta_penalty": 0.25})
+        test_agent.to_infected()
+        assert test_agent.state == 'infected'
+
+        assert 0.0 <= test_agent.probability_to_infect() <= 1.0
+
+    def test_wears_mask_never(self):
+        test_agent = SEIRNeighborsFSMExtended(**{**self.seir_params,
+                                                 "name": "test_agent",
+                                                 "beta": 1.0,
+                                                 "wears_mask_at_contact_p": 0.0,
+                                                 "mask_beta_penalty": 1.0})
+
+        test_agent.to_infected()
+        assert test_agent.state == 'infected'
+
+        assert test_agent.probability_to_infect() == 1.0
