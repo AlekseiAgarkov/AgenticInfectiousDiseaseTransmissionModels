@@ -155,7 +155,9 @@ class SEIRNeighborsFSMExtendedTests(TestCase):
                                 metrics_collector=self.metrics_collector)
         self.highly_infective_neighbor = SEIRNeighborsFSMExtended(**{**self.seir_params,
                                                                      "beta": 1.0,
-                                                                     "name": 'neighbor'})
+                                                                     "name": 'neighbor',
+                                                                     "immunity_lower_bound": 0.0,
+                                                                     "immunity_upper_bound": 1.0})
         self.highly_infective_neighbor.to_infected()
         assert self.highly_infective_neighbor.state == 'infected'
 
