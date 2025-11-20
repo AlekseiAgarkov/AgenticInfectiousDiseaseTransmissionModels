@@ -94,57 +94,6 @@ are Infectious with a probability of $P=\beta*N_{infected}$, where $N_{infected}
 Neighbors are preconfigured through `src/generators/neighbors.py` util.
 
 ### Agent FSM Graph
-![SEIRNeighborsFSMAgent.png](docs%2Fimg%2FSEIRNeighborsFSMAgent.png)
-
-### Metrics collection
-The simulator logs state transitions for every agent. Upon completion, the simulator outputs a CSV-file
-to an output location along with simulation parameters JSON.
-
-### CLI Argument Reference
-Usage example:
-```shell
-python seir_neighbors_sim.py -o simulation_data \
--c configs/seir_neighbors_base.toml \
--r 42 \
--n 1000 \
--t 365 \
--b 0.025 \
---e1 1 \
---e2 3 \
---t1 5 \
---t2 14
-```
-
-Options:
-* `-h`, `--help` - show help message and exit
-
-Paths:
-*  `-o`, `--output_path` - Simulation data output folder
-*  `-c`, `--config_path` - Config path
-* `--neighbors_data_path` - Path to Neighbors Data 
-
-Simulation Parameters:
-* `-r`, `--random_seed` - Random seed
-* `-n`, `--n_agents` - Number of agents
-* `-t`, `--sim_duration` - Duration of Simulation, units
-* `-i`, `--initially_infected` - Number of initially infected agents
-
-
-Agent Parameters:
-* `-b`, `--beta` - Model parameter Beta
-* `e1`, Minimal Exposed State Duration
-* `e2`, Maximal Exposed State Duration
-* `t1`, Minimal Infected State Duration
-* `t2`, Maximal Infected State Duration
-
-## SEIR with Neighbors on a 2D Plane Simulator
-Simulator for SEIR with Neighbors on a 2D plane model is implemented in `seir_neighbors_sim.py`.
-It features neighbor interaction. Susceptible agents can transition to Exposed state only if their neighbors 
-are Infectious with a probability of $P=\beta*N_{infected}$, where $N_{infected}$ is a number of infected neighbors.
-
-Neighbors are preconfigured through `src/generators/neighbors.py` util.
-
-### Agent FSM Graph
 Agents come in two flavors:
 * SEIRNeighborsFSMAgent - Base implementation
 * SEIRNeighborsFSMExtended - Extended implementation
@@ -183,10 +132,47 @@ Age is sampled in two steps:
 2. Age is randomly sample from uniform distribution between lower and upper bracket of age range sampled at previous step.
 
 ### CLI Argument Reference
+#### SEIRNeighborsFSMAgent
 Usage example:
 ```shell
 python seir_neighbors_sim.py -o simulation_data \
 -c configs/seir_neighbors_base.toml \
+-r 42 \
+-n 1000 \
+-t 365 \
+-b 0.025 \
+--e1 1 \
+--e2 3 \
+--t1 5 \
+--t2 14
+```
+
+Options:
+* `-h`, `--help` - show help message and exit
+
+Paths:
+*  `-o`, `--output_path` - Simulation data output folder
+*  `-c`, `--config_path` - Config path
+* `--neighbors_data_path` - Path to Neighbors Data 
+
+Simulation Parameters:
+* `-r`, `--random_seed` - Random seed
+* `-n`, `--n_agents` - Number of agents
+* `-t`, `--sim_duration` - Duration of Simulation, units
+* `-i`, `--initially_infected` - Number of initially infected agents
+
+Agent Parameters:
+* `-b`, `--beta` - Model parameter Beta
+* `e1`, Minimal Exposed State Duration
+* `e2`, Maximal Exposed State Duration
+* `t1`, Minimal Infected State Duration
+* `t2`, Maximal Infected State Duration
+
+#### SEIRNeighborsFSMExtended
+Usage example:
+```shell
+python seir_neighbors_ext_sim.py -o simulation_data \
+-c configs/seir_neighbors_ext_test.toml \
 -r 42 \
 -n 1000 \
 -t 365 \
