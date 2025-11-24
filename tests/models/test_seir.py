@@ -252,7 +252,7 @@ class SEIRNeighborsFSMExtendedTests(TestCase):
         highly_infective_neighbor_heavily_masked.wears_mask_at_contact_p = 1.0
         test_agent.set_neighbors(neighbors=[highly_infective_neighbor_heavily_masked])
 
-        assert highly_infective_neighbor_heavily_masked.beta == 1.0
+        assert highly_infective_neighbor_heavily_masked.beta_f() == 1.0
         assert highly_infective_neighbor_heavily_masked.probability_to_infect() == 0.0
         assert test_agent.current_immunity() == 0.0
         test_agent.try_get_exposed()

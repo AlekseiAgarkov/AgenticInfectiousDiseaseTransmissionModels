@@ -1,5 +1,5 @@
 import random
-from typing import List, Union, Optional
+from typing import List, Union, Optional, Callable
 
 import numpy as np
 import simpy
@@ -9,6 +9,7 @@ from transitions.extensions import GraphMachine
 from metrics.collector import TransitionMetricsCollector
 from models.agents import BaseAgent
 from models.immunity import immunity_by_year_day
+from models.pathogen import Pathogen
 
 
 class SEIRFSMBase(BaseAgent):
@@ -178,6 +179,7 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
                  t1: int,
                  t2: int,
                  age: int,
+                 beta_f: Optional[Pathogen] = None,
                  wears_mask_at_contact_p: float = 0.5,
                  mask_beta_penalty: float = 0.0,
                  immunity_lower_bound: float = 0.0,
@@ -207,10 +209,11 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
 
         self.immunity_lower_bound = immunity_lower_bound
         self.immunity_upper_bound = immunity_upper_bound
+        self.beta_f: Union[Pathogen, Callable[[], float]] = beta_f or (lambda: self.beta)
 
     def probability_to_infect(self):
         wears_mask_at_contact: int = np.random.binomial(n=1, p=self.wears_mask_at_contact_p)
-        return self.beta * self.is_infected() * (1.0 - self.mask_beta_penalty * wears_mask_at_contact)
+        return self.beta_f() * self.is_infected() * (1.0 - self.mask_beta_penalty * wears_mask_at_contact)
 
     def current_immunity(self, decimals: int = 2) -> float:
         return round(immunity_by_year_day(day=self.env.now,
