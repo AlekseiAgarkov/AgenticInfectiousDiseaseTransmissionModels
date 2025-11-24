@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Union
+from typing import Any, Union, Dict
 
 import numpy as np
 import simpy
@@ -7,7 +7,7 @@ import simpy
 
 class Pathogen(ABC):
 
-    def __init__(self, env: simpy.Environment, name: str):
+    def __init__(self, env: simpy.Environment, name: str, **kwargs):
         self.env = env
         self.name = name
 
@@ -19,6 +19,16 @@ class Pathogen(ABC):
         pass
 
 
+PATHOGEN_REGISTRY: Dict[str, Pathogen] = {}
+
+
+def register_pathogen(cls):
+    """Decorator to register classes"""
+    PATHOGEN_REGISTRY[cls.__name__] = cls
+    return cls
+
+
+@register_pathogen
 class LinearPathogen(Pathogen):
     pathogen_values: np.ndarray[tuple[Any, ...], np.dtype[np.float64]]
 
@@ -39,6 +49,7 @@ class LinearPathogen(Pathogen):
         return self.pathogen_values.item(sim_time)
 
 
+@register_pathogen
 class DiscretePredefinedPathogen(Pathogen):
     pathogen_values: np.ndarray[tuple[Any, ...], np.dtype[np.float64]]
 
@@ -52,3 +63,15 @@ class DiscretePredefinedPathogen(Pathogen):
 
     def _get_beta(self, sim_time: int) -> Union[float, np.float64]:
         return self.pathogen_values.item(sim_time)
+
+
+def init_pathogen_from_config(env: simpy.Environment, config_data: Dict[str, Any]):
+    """Create class instance from config dictionary"""
+    class_name: str = config_data.get("class")
+    if not class_name or class_name not in PATHOGEN_REGISTRY:
+        raise ValueError(f"Unknown class: {class_name}")
+
+    cls: Pathogen = PATHOGEN_REGISTRY[class_name]
+    # Remove class key from kwargs
+    kwargs = {k: v for k, v in config_data.items() if k != "class"}
+    return cls(env=env, **kwargs)

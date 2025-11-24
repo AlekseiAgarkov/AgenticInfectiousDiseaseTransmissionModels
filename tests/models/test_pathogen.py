@@ -1,9 +1,10 @@
+import tomllib
 from unittest import TestCase
 from unittest.mock import MagicMock
 
 import numpy as np
 
-from models.pathogen import LinearPathogen, DiscretePredefinedPathogen
+from models.pathogen import LinearPathogen, DiscretePredefinedPathogen, init_pathogen_from_config
 
 
 class LinearPathogenTests(TestCase):
@@ -42,3 +43,42 @@ class DiscretePredefinedPathogenTests(TestCase):
         for sim_step in range(sim_duration):
             env.now = sim_step
             assert linear_pathogen() == pathogen_values[sim_step]
+
+
+class InitPathogensTests(TestCase):
+
+    def setUp(self):
+        self.toml_config = """
+        [linear_pathogen]
+        class = "LinearPathogen"
+        name = "LinearPathogen"
+        base_beta = 0.0
+        max_beta = 1.0
+    
+        [discrete_predefined_pathogen]
+        class = "DiscretePredefinedPathogen"
+        name = "DiscretePredefinedPathogen"
+        pathogen_values = [0.1, 0.2]
+        """
+        self.config = tomllib.loads(self.toml_config)
+        self.env = MagicMock()
+
+    def tearDown(self):
+        self.toml_config = None
+        self.config = None
+        self.env = None
+
+    def test_init_linear_pathogen(self):
+        linear_pathogen = init_pathogen_from_config(env=self.env,
+                                                    config_data={**self.config["linear_pathogen"],
+                                                                 "sim_duration": 10})
+
+        assert isinstance(linear_pathogen, LinearPathogen)
+
+    def test_init_discrete_predefined_pathogen(self):
+        discrete_predefined_pathogen = init_pathogen_from_config(
+            env=self.env,
+            config_data=self.config[
+                "discrete_predefined_pathogen"])
+
+        assert isinstance(discrete_predefined_pathogen, DiscretePredefinedPathogen)
