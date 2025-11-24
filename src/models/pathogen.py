@@ -37,3 +37,18 @@ class LinearPathogen(Pathogen):
 
     def _get_beta(self, sim_time: int) -> Union[float, np.float64]:
         return self.pathogen_values[sim_time]
+
+
+class DiscretePredefinedPathogen(Pathogen):
+    pathogen_values: np.ndarray[tuple[Any, ...], np.dtype[np.float64]]
+
+    def __init__(self,
+                 env: simpy.Environment,
+                 name: str,
+                 pathogen_values: np.ndarray[tuple[Any, ...], np.dtype[np.float64]]):
+        super().__init__(env, name)
+
+        self.pathogen_values = pathogen_values
+
+    def _get_beta(self, sim_time: int) -> Union[float, np.float64]:
+        return self.pathogen_values.item(sim_time)
