@@ -36,7 +36,7 @@ class LinearPathogen(Pathogen):
         self.pathogen_values = np.linspace(start=base_beta, num=sim_duration + 1, stop=max_beta)
 
     def _get_beta(self, sim_time: int) -> Union[float, np.float64]:
-        return self.pathogen_values[sim_time]
+        return self.pathogen_values.item(sim_time)
 
 
 class DiscretePredefinedPathogen(Pathogen):
