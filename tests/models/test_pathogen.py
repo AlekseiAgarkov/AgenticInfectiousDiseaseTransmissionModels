@@ -36,13 +36,29 @@ class DiscretePredefinedPathogenTests(TestCase):
         pathogen_values = np.array([0.1, 0.5, 0.2, 0.15, 0.4])
         sim_duration = len(pathogen_values)
 
-        linear_pathogen = DiscretePredefinedPathogen(env=env,
-                                                     name='linear_pathogen',
-                                                     pathogen_values=pathogen_values)
+        discrete_predefined_pathogen = DiscretePredefinedPathogen(env=env,
+                                                                  name='linear_pathogen',
+                                                                  pathogen_values=pathogen_values)
 
         for sim_step in range(sim_duration):
             env.now = sim_step
-            assert linear_pathogen() == pathogen_values[sim_step]
+            assert discrete_predefined_pathogen() == pathogen_values[sim_step]
+
+    def test_discrete_predefined_pathogen_circular(self):
+        env = MagicMock()
+
+        pathogen_values = np.array([0.1, 0.5, 0.2, 0.15, 0.4])
+        target_pathogen_values = np.concatenate((pathogen_values, pathogen_values))
+        sim_duration = len(pathogen_values) * 2
+
+        discrete_predefined_pathogen = DiscretePredefinedPathogen(env=env,
+                                                                  name='linear_pathogen',
+                                                                  pathogen_values=pathogen_values,
+                                                                  is_circular=True)
+
+        for sim_step in range(sim_duration):
+            env.now = sim_step
+            assert discrete_predefined_pathogen() == target_pathogen_values[sim_step]
 
 
 class InitPathogensTests(TestCase):
@@ -59,6 +75,7 @@ class InitPathogensTests(TestCase):
         class = "DiscretePredefinedPathogen"
         name = "DiscretePredefinedPathogen"
         pathogen_values = [0.1, 0.2]
+        is_circular = true
         """
         self.config = tomllib.loads(self.toml_config)
         self.env = MagicMock()

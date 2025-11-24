@@ -56,13 +56,16 @@ class DiscretePredefinedPathogen(Pathogen):
     def __init__(self,
                  env: simpy.Environment,
                  name: str,
-                 pathogen_values: np.ndarray[tuple[Any, ...], np.dtype[np.float64]]):
+                 pathogen_values: np.ndarray[tuple[Any, ...], np.dtype[np.float64]],
+                 is_circular: bool = False):
         super().__init__(env, name)
 
         self.pathogen_values = pathogen_values
+        self.is_circular = is_circular
 
     def _get_beta(self, sim_time: int) -> Union[float, np.float64]:
-        return self.pathogen_values.item(sim_time)
+        idx = sim_time % len(self.pathogen_values) if self.is_circular else sim_time
+        return self.pathogen_values.item(idx)
 
 
 def init_pathogen_from_config(env: simpy.Environment, config_data: Dict[str, Any]):
