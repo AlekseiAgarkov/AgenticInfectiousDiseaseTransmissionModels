@@ -11,6 +11,7 @@ from metrics.collector import StateCountMetricsCollector, TransitionMetricsColle
 from models.age import sample_age
 from models.agents import BaseAgent
 from models.immunity import adjust_immunity_by_mid_proportional
+from models.pathogen import init_pathogen_from_config
 from models.seir import SEIRNeighborsFSMAgent, SEIRNeighborsFSMExtended
 
 
@@ -74,12 +75,15 @@ def configure_neighbors_simulation(log: Logger,
 
 
 def configure_extended_neighbors_simulation(
-        log: Logger, environment: simpy.Environment,
+        log: Logger,
+        environment: simpy.Environment,
+        sim_duration: int,
         agent_params: Dict,
         neighbors_data: pd.DataFrame,
         initially_infected: int,
         age_params: Dict,
         immunity_params: Dict,
+        pathogen: Optional[Dict] = None,
         initially_infected_indices: Optional[List] = None) -> TransitionMetricsCollector:
     log.info("Initializing Metrics Collector")
     metrics_collector: TransitionMetricsCollector = TransitionMetricsCollector()
@@ -101,10 +105,18 @@ def configure_extended_neighbors_simulation(
         wears_mask_at_contact_p = np.random.uniform(low=immunity_params['mask_discipline_worst'],
                                                     high=immunity_params['mask_discipline_best'])
 
+        pathogen_initialized = None
+        if pathogen:
+            if pathogen['class'] == 'LinearPathogen':
+                pathogen = {**pathogen, "sim_duration": sim_duration}
+
+            pathogen_initialized = init_pathogen_from_config(env=environment, config_data=pathogen)
+
         agents[n] = SEIRNeighborsFSMExtended(env=environment,
                                              metrics_collector=metrics_collector,
                                              name=n,
                                              **agent_params,
+                                             beta_f=pathogen_initialized,
                                              age=age,
                                              immunity_lower_bound=agent_immunity_lower_bound,
                                              immunity_upper_bound=agent_immunity_upper_bound,

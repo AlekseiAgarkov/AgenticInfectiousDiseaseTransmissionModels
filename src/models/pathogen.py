@@ -60,7 +60,7 @@ class DiscretePredefinedPathogen(Pathogen):
                  is_circular: bool = False):
         super().__init__(env, name)
 
-        self.pathogen_values = pathogen_values
+        self.pathogen_values = np.array(pathogen_values)
         self.is_circular = is_circular
 
     def _get_beta(self, sim_time: int) -> Union[float, np.float64]:

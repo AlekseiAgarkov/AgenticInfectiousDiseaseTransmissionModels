@@ -90,6 +90,8 @@ if __name__ == '__main__':
         "immunity_reduction_factors": config['age'].get('immunity_reduction_factors'),
     }
 
+    PATHOGEN = config['pathogens'].get(config['simulation'].get('pathogen'))
+
     SIM_DURATION: int = args.sim_duration or config['simulation']['sim_duration']
     OUTPUT_PATH: str = args.output_path or config['paths']['output_path']
     LOG_OUTPUT: str = f'{config['paths']['log_output']}/{SIMULATOR_NAME}_Log-{simulation_start_str}.log'
@@ -102,7 +104,8 @@ if __name__ == '__main__':
         "initially_infected": INITIALLY_INFECTED,
         "age_params": AGE_PARAMS,
         "immunity_params": IMMUNITY_PARAMS,
-        **AGENT_PARAMS
+        **AGENT_PARAMS,
+        "pathogen": PATHOGEN
     }
 
     log: Logger = logging.getLogger(SIMULATOR_NAME)
@@ -114,10 +117,12 @@ if __name__ == '__main__':
     env = simpy.Environment()
     metrics = configure_extended_neighbors_simulation(log=log,
                                                       environment=env,
+                                                      sim_duration=SIM_DURATION,
                                                       agent_params=AGENT_PARAMS,
                                                       neighbors_data=NEIGHBORS_DATA,
                                                       immunity_params=IMMUNITY_PARAMS,
                                                       age_params=AGE_PARAMS,
+                                                      pathogen=PATHOGEN,
                                                       initially_infected=INITIALLY_INFECTED,
                                                       initially_infected_indices=INITIALLY_INFECTED_INDICES)
 
