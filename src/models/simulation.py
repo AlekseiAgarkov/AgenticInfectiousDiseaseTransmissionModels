@@ -77,18 +77,21 @@ def configure_neighbors_simulation(log: Logger,
 def configure_extended_neighbors_simulation(
         log: Logger,
         environment: simpy.Environment,
-        sim_duration: int,
         agent_params: Dict,
         neighbors_data: pd.DataFrame,
         initially_infected: int,
         age_params: Dict,
         immunity_params: Dict,
-        pathogen: Optional[Dict] = None,
+        pathogen_config: Dict,
         initially_infected_indices: Optional[List] = None) -> TransitionMetricsCollector:
     log.info("Initializing Metrics Collector")
     metrics_collector: TransitionMetricsCollector = TransitionMetricsCollector()
 
     log.info("Initializing Agents")
+
+    pathogen_initialized = None
+    if pathogen_config:
+        pathogen_initialized = init_pathogen_from_config(env=environment, config_data=pathogen_config)
 
     agents: Dict[int, SEIRNeighborsFSMExtended] = {}
     for n in tqdm(range(neighbors_data.shape[0])):
@@ -104,13 +107,6 @@ def configure_extended_neighbors_simulation(
 
         wears_mask_at_contact_p = np.random.uniform(low=immunity_params['mask_discipline_worst'],
                                                     high=immunity_params['mask_discipline_best'])
-
-        pathogen_initialized = None
-        if pathogen:
-            if pathogen['class'] == 'LinearPathogen':
-                pathogen = {**pathogen, "sim_duration": sim_duration}
-
-            pathogen_initialized = init_pathogen_from_config(env=environment, config_data=pathogen)
 
         agents[n] = SEIRNeighborsFSMExtended(env=environment,
                                              metrics_collector=metrics_collector,
