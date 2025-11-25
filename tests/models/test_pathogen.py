@@ -95,7 +95,13 @@ class InitPathogensTests(TestCase):
     def test_init_discrete_predefined_pathogen(self):
         discrete_predefined_pathogen = init_pathogen_from_config(
             env=self.env,
-            config_data=self.config[
-                "discrete_predefined_pathogen"])
+            config_data=self.config["discrete_predefined_pathogen"])
+
+        assert isinstance(discrete_predefined_pathogen, DiscretePredefinedPathogen)
+
+    def test_init_ignore_extra_params(self):
+        discrete_predefined_pathogen = init_pathogen_from_config(
+            env=self.env,
+            config_data={**self.config["discrete_predefined_pathogen"], "extra_param": 1})
 
         assert isinstance(discrete_predefined_pathogen, DiscretePredefinedPathogen)

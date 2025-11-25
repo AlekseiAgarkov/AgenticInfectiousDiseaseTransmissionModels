@@ -1,3 +1,4 @@
+import inspect
 from abc import ABC, abstractmethod
 from typing import Any, Union, Dict
 
@@ -75,6 +76,6 @@ def init_pathogen_from_config(env: simpy.Environment, config_data: Dict[str, Any
         raise ValueError(f"Unknown class: {class_name}")
 
     cls: Pathogen = PATHOGEN_REGISTRY[class_name]
-    # Remove class key from kwargs
-    kwargs = {k: v for k, v in config_data.items() if k != "class"}
-    return cls(env=env, **kwargs)
+    signature = inspect.signature(cls.__init__)
+    params = {k: v for k, v in config_data.items() if k in signature.parameters}
+    return cls(env=env, **params)
