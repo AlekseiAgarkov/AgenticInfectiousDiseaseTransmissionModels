@@ -20,8 +20,8 @@ class LinearPathogenTests(TestCase):
         linear_pathogen = LinearPathogen(env=env,
                                          name='linear_pathogen',
                                          sim_duration=sim_duration,
-                                         base_beta=base_beta,
-                                         max_beta=max_beta)
+                                         start_beta=base_beta,
+                                         end_beta=max_beta)
 
         for sim_step in range(sim_duration + 1):
             env.now = sim_step
@@ -68,8 +68,8 @@ class InitPathogensTests(TestCase):
         [linear_pathogen]
         class = "LinearPathogen"
         name = "LinearPathogen"
-        base_beta = 0.0
-        max_beta = 1.0
+        start_beta = 0.0
+        end_beta = 1.0
     
         [discrete_predefined_pathogen]
         class = "DiscretePredefinedPathogen"

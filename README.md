@@ -151,6 +151,21 @@ $$P_{to\_infect}(A_i(t))=\beta_{A_i} \cdot I_{A}(t) \cdot (1 - M_{\beta\ penalty
 Mask wearing discipline is defined in the config as a range for population. Every agent is assigned their own 
 'discipline' - probability of wearing a mask on contact with neighboring agent. 
 
+#### Pathogens
+The idea for pathogens is that the infection could 'evolve' over the course of the simulation. 
+But as the pathogen is just $F_{\beta}(t)$, the two main components are time and $\beta$ value.
+
+The following pathogens are implemented: 
+- Fixed $\beta$ - fixed infectivity $\beta$ parameter, which stays the same during entire simulation; 
+- `LinearPathogen` - infectivity $\beta$ parameter changes linearly at every step of the simulation 
+from `start_beta` to `end_beta`;  
+- `DiscretePredefinedPathogen` - outputs discrete predefined infectivity values at simulation time, 
+may be used as a cyclic group, i.e. number of values is less than simulation duration, and it cycles through predefined 
+value list.
+
+Pathogens are defined in the `[pathogens]` section of the TOML config. 
+Each pathogen config should contain all the fields necessary to initialize a class.    
+
 ### CLI Argument Reference
 #### SEIRNeighborsFSMAgent
 Usage example:

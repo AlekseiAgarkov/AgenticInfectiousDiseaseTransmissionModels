@@ -37,14 +37,14 @@ class LinearPathogen(Pathogen):
                  env: simpy.Environment,
                  name: str,
                  sim_duration: int,
-                 base_beta: float,
-                 max_beta: float):
+                 start_beta: float,
+                 end_beta: float):
         super().__init__(env, name)
         self.sim_duration = sim_duration
-        self.base_beta = base_beta
-        self.max_beta = max_beta
+        self.start_beta = start_beta
+        self.end_beta = end_beta
 
-        self.pathogen_values = np.linspace(start=base_beta, num=sim_duration + 1, stop=max_beta)
+        self.pathogen_values = np.linspace(start=start_beta, num=sim_duration + 1, stop=end_beta)
 
     def _get_beta(self, sim_time: int) -> Union[float, np.float64]:
         return self.pathogen_values.item(sim_time)

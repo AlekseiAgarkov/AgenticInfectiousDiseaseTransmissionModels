@@ -39,8 +39,8 @@ immunity_reduction_factors = { 0 = 0.2, 1 = 0.05, 2 = 0.0, 3 = 0.0, 4 = 0.05, 5 
 [pathogens.linear_pathogen]
 class = "LinearPathogen"
 name = "LinearPathogen"
-base_beta = 0.0
-max_beta = 1.0
+start_beta = 0.0
+end_beta = 1.0
 
 [pathogens.discrete_predefined_pathogen]
 class = "DiscretePredefinedPathogen"
