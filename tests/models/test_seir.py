@@ -258,6 +258,19 @@ class SEIRNeighborsFSMExtendedTests(TestCase):
         test_agent.try_get_exposed()
         assert test_agent.state == 'susceptible'
 
+    def test_pollutant_beta_penalty(self):
+        test_agent = SEIRNeighborsFSMExtended(**{**self.seir_params,
+                                                 "name": "test_agent",
+                                                 "immunity_lower_bound": 1.0,
+                                                 "immunity_upper_bound": 1.0,
+                                                 "exposed_to_pollutant": True,
+                                                 "pollutant_beta_penalty": 1.0})
+
+        test_agent.set_neighbors(neighbors=[self.highly_infective_neighbor])
+
+        test_agent.try_get_exposed()
+        assert test_agent.state == 'exposed'
+
     def test_wears_mask_always(self):
         test_agent = SEIRNeighborsFSMExtended(**{**self.seir_params,
                                                  "name": "test_agent",

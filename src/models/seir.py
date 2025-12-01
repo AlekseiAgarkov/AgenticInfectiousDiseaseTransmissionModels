@@ -183,7 +183,9 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
                  wears_mask_at_contact_p: float = 0.5,
                  mask_beta_penalty: float = 0.0,
                  immunity_lower_bound: float = 0.0,
-                 immunity_upper_bound: float = 1.0):
+                 immunity_upper_bound: float = 1.0,
+                 exposed_to_pollutant: bool = False,
+                 pollutant_beta_penalty: float = 0.0):
         super().__init__(env=env,
                          metrics_collector=metrics_collector,
                          name=name,
@@ -203,6 +205,11 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
         self.mask_beta_penalty = mask_beta_penalty
         self.wears_mask_at_contact_p = wears_mask_at_contact_p
 
+        assert 0 <= pollutant_beta_penalty <= 1.0
+        self.pollutant_beta_penalty = pollutant_beta_penalty
+        self.exposed_to_pollutant = exposed_to_pollutant
+        self.exposition_coeff = (1.0 - self.pollutant_beta_penalty * self.exposed_to_pollutant)
+
         assert 0.0 <= immunity_lower_bound <= 1.0
         assert 0.0 <= immunity_upper_bound <= 1.0
         assert immunity_lower_bound <= immunity_upper_bound
@@ -213,12 +220,15 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
 
     def probability_to_infect(self):
         wears_mask_at_contact: int = np.random.binomial(n=1, p=self.wears_mask_at_contact_p)
-        return self.beta_f() * self.is_infected() * (1.0 - self.mask_beta_penalty * wears_mask_at_contact)
+        mask_coeff = (1.0 - self.mask_beta_penalty * wears_mask_at_contact)
+        return self.beta_f() * self.is_infected() * mask_coeff
 
     def current_immunity(self, decimals: int = 2) -> float:
-        return round(immunity_by_year_day(day=self.env.now,
-                                          low=self.immunity_lower_bound,
-                                          high=self.immunity_upper_bound), decimals)
+        current_day_immunity = immunity_by_year_day(day=self.env.now,
+                                                    low=self.immunity_lower_bound,
+                                                    high=self.immunity_upper_bound)
+
+        return round(current_day_immunity * self.exposition_coeff, decimals)
 
     def got_exposed(self, event: EventData) -> bool:
         neighbor_infect_probability = sum(n.probability_to_infect() for n in self.neighbors)
