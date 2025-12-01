@@ -232,7 +232,7 @@ pollutant_exposure_poly = [[25, 25], [25, 50], [50, 50], [50, 25]]
 At Agent initialization, their coordinates are checked if they fall within "polluted" area mask. If so,
 a `exposed_to_pollutant` flag is set to `True` and `pollutant_beta_penalty` is applied at immunity check.
 
-![Pollution Polygon Mask.png](docs%2Fimg%2Fpolygons%2FPollution%20Polygon%20Mask.png)
+![Polluted Area.png](docs%2Fimg%2Fpolygons%2FPolluted%20Area.png)
 
 ### CLI Argument Reference
 
