@@ -99,6 +99,8 @@ if __name__ == '__main__':
     if PATHOGEN_CONFIG:
         PATHOGEN_CONFIG['sim_duration'] = SIM_DURATION
 
+    POLLUTANTS_CONFIG = config.get('pollutants', {})
+
     simulation_params = {
         "random_seed": RANDOM_SEED,
         "n_agents": N_AGENTS,
@@ -108,7 +110,8 @@ if __name__ == '__main__':
         "age_params": AGE_PARAMS,
         "immunity_params": IMMUNITY_PARAMS,
         **AGENT_PARAMS,
-        "pathogen_config": PATHOGEN_CONFIG
+        "pathogen_config": PATHOGEN_CONFIG,
+        "pollutants_config": POLLUTANTS_CONFIG
     }
 
     log: Logger = logging.getLogger(SIMULATOR_NAME)
@@ -126,7 +129,8 @@ if __name__ == '__main__':
                                                       age_params=AGE_PARAMS,
                                                       pathogen_config=PATHOGEN_CONFIG,
                                                       initially_infected=INITIALLY_INFECTED,
-                                                      initially_infected_indices=INITIALLY_INFECTED_INDICES)
+                                                      initially_infected_indices=INITIALLY_INFECTED_INDICES,
+                                                      pollutants_config=POLLUTANTS_CONFIG)
 
     log.info(f"Running Simulation: {config['title']}")
     env.run(until=SIM_DURATION)

@@ -5,6 +5,7 @@ from typing import Type, Dict, List, Optional
 import numpy as np
 import pandas as pd
 import simpy
+from matplotlib import path as mpl_path
 from tqdm import tqdm
 
 from metrics.collector import StateCountMetricsCollector, TransitionMetricsCollector
@@ -12,6 +13,7 @@ from models.age import sample_age
 from models.agents import BaseAgent
 from models.immunity import adjust_immunity_by_mid_proportional
 from models.pathogen import init_pathogen_from_config
+from models.polygons import point_in_polygon
 from models.seir import SEIRNeighborsFSMAgent, SEIRNeighborsFSMExtended
 
 
@@ -83,6 +85,7 @@ def configure_extended_neighbors_simulation(
         age_params: Dict,
         immunity_params: Dict,
         pathogen_config: Dict,
+        pollutants_config: Dict,
         initially_infected_indices: Optional[List] = None) -> TransitionMetricsCollector:
     log.info("Initializing Metrics Collector")
     metrics_collector: TransitionMetricsCollector = TransitionMetricsCollector()
@@ -92,6 +95,10 @@ def configure_extended_neighbors_simulation(
     pathogen_initialized = None
     if pathogen_config:
         pathogen_initialized = init_pathogen_from_config(env=environment, config_data=pathogen_config)
+
+    pollutant_beta_penalty = pollutants_config.get('pollutant_beta_penalty', 0.0)
+    pollutant_exposure_poly: Optional[List] = pollutants_config.get('pollutant_exposure_poly', None)
+    pollutant_exposure_poly = mpl_path.Path(pollutant_exposure_poly) if pollutant_exposure_poly else None
 
     agents: Dict[int, SEIRNeighborsFSMExtended] = {}
     for n in tqdm(range(neighbors_data.shape[0])):
@@ -108,18 +115,25 @@ def configure_extended_neighbors_simulation(
         wears_mask_at_contact_p = np.random.uniform(low=immunity_params['mask_discipline_worst'],
                                                     high=immunity_params['mask_discipline_best'])
 
-        agents[n] = SEIRNeighborsFSMExtended(env=environment,
-                                             metrics_collector=metrics_collector,
-                                             name=n,
-                                             **agent_params,
-                                             beta_f=pathogen_initialized,
-                                             age=age,
-                                             immunity_lower_bound=agent_immunity_lower_bound,
-                                             immunity_upper_bound=agent_immunity_upper_bound,
-                                             mask_beta_penalty=immunity_params['mask_beta_penalty'],
-                                             wears_mask_at_contact_p=wears_mask_at_contact_p,
-                                             x=float(neighbors_data['x'].iloc[n]),
-                                             y=float(neighbors_data['y'].iloc[n]))
+        x = float(neighbors_data['x'].iloc[n])
+        y = float(neighbors_data['y'].iloc[n])
+        exposed_to_pollutant = point_in_polygon(x, y, pollutant_exposure_poly)
+
+        agents[n] = SEIRNeighborsFSMExtended(
+            env=environment,
+            metrics_collector=metrics_collector,
+            name=n,
+            **agent_params,
+            beta_f=pathogen_initialized,
+            age=age,
+            immunity_lower_bound=agent_immunity_lower_bound,
+            immunity_upper_bound=agent_immunity_upper_bound,
+            mask_beta_penalty=immunity_params['mask_beta_penalty'],
+            wears_mask_at_contact_p=wears_mask_at_contact_p,
+            x=x,
+            y=y,
+            exposed_to_pollutant=exposed_to_pollutant,
+            pollutant_beta_penalty=pollutant_beta_penalty)
 
     log.info("Linking Neighbors")
     for i, a in tqdm(agents.items()):

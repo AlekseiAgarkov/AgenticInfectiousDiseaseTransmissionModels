@@ -34,6 +34,10 @@ age_ranges = { 0 = [0, 9], 1 = [10, 19], 2 = [20, 29], 3 = [30, 39], 4 = [40, 49
 age_probs = { 0 = 0.1125, 1 = 0.15, 2 = 0.2, 3 = 0.15, 4 = 0.2, 5 = 0.1, 6 = 0.05, 7 = 0.025, 8 = 0.00625, 9 = 0.00625 }
 immunity_reduction_factors = { 0 = 0.2, 1 = 0.05, 2 = 0.0, 3 = 0.0, 4 = 0.05, 5 = 0.1, 6 = 0.15, 7 = 0.2, 8 = 0.25, 9 = 0.3 }
 
+[pollutants]
+pollutant_beta_penalty = 0.05
+pollutant_exposure_poly = [[25, 25], [25, 50], [50, 50], [50, 25]]
+
 [pathogens]
 
 [pathogens.linear_pathogen]
