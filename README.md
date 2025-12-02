@@ -278,6 +278,10 @@ Agent Parameters:
 * `t1`, Minimal Infected State Duration
 * `t2`, Maximal Infected State Duration
 
+Pollutant Parameters:
+
+* `--pollutant_immunity_reduction` - Pollutant immunity reduction coefficient
+
 #### SEIRNeighborsFSMExtended
 
 Usage example:
