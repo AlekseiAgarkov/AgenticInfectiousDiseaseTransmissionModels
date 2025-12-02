@@ -1,0 +1,39 @@
+title = "SEIR Neighbors Scenario: Project Practice"
+
+[simulator]
+name = 'SEIR_Neighbors_Project_Practice_Simulation'
+
+[paths]
+output_path = "simulation_data/project_practice"
+log_output = "simulation_logs/project_practice"
+neighbors_data_path = "simulation_conditions_data/neighbors/NeighborsMap-100by100-Agents10000-Neighbors20-2025-10-07-005129Z.csv"
+
+[simulation]
+random_seed = 42
+n_agents = 10000
+sim_duration = 365
+initially_infected = 5
+initially_infected_indices = [40, 101, 200, 300, 1050]
+
+[agents]
+beta = 0.03
+e1 = 5
+e2 = 10
+t1 = 14
+t2 = 21
+
+[immunity]
+lowest_immunity = 0.1
+highest_immunity = 0.8
+mask_beta_penalty = 0.50
+mask_discipline_worst = 0.0
+mask_discipline_best = 0.75
+
+[age]
+age_ranges = { 0 = [0, 9], 1 = [10, 19], 2 = [20, 29], 3 = [30, 39], 4 = [40, 49], 5 = [50, 59], 6 = [60, 69], 7 = [70, 79], 8 = [80, 89], 9 = [90, 100] }
+age_probs = { 0 = 0.1125, 1 = 0.15, 2 = 0.2, 3 = 0.15, 4 = 0.2, 5 = 0.1, 6 = 0.05, 7 = 0.025, 8 = 0.00625, 9 = 0.00625 }
+immunity_reduction_factors = { 0 = 0.2, 1 = 0.05, 2 = 0.0, 3 = 0.0, 4 = 0.05, 5 = 0.1, 6 = 0.15, 7 = 0.2, 8 = 0.25, 9 = 0.3 }
+
+[pollutants]
+pollutant_immunity_reduction = 0.10
+pollutant_exposure_poly = [[25, 25], [25, 75], [75, 75], [75, 25]]
