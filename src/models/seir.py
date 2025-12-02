@@ -185,7 +185,7 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
                  immunity_lower_bound: float = 0.0,
                  immunity_upper_bound: float = 1.0,
                  exposed_to_pollutant: bool = False,
-                 pollutant_beta_penalty: float = 0.0):
+                 pollutant_immunity_reduction: float = 0.0):
         super().__init__(env=env,
                          metrics_collector=metrics_collector,
                          name=name,
@@ -205,10 +205,10 @@ class SEIRNeighborsFSMExtended(SEIRNeighborsFSMAgent):
         self.mask_beta_penalty = mask_beta_penalty
         self.wears_mask_at_contact_p = wears_mask_at_contact_p
 
-        assert 0 <= pollutant_beta_penalty <= 1.0
-        self.pollutant_beta_penalty = pollutant_beta_penalty
+        assert 0 <= pollutant_immunity_reduction <= 1.0
+        self.pollutant_immunity_reduction = pollutant_immunity_reduction
         self.exposed_to_pollutant = exposed_to_pollutant
-        self.exposition_coeff = (1.0 - self.pollutant_beta_penalty * self.exposed_to_pollutant)
+        self.exposition_coeff = (1.0 - self.pollutant_immunity_reduction * self.exposed_to_pollutant)
 
         assert 0.0 <= immunity_lower_bound <= 1.0
         assert 0.0 <= immunity_upper_bound <= 1.0

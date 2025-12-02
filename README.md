@@ -219,18 +219,18 @@ Each pathogen config should contain all the fields necessary to initialize a cla
 Adding "polluted" area mask to the neighbors 2d plane via arbitrary polygon coordinates is possible at
 `pollutants` section of the config:
 
-- `pollutant_beta_penalty` - decreases immunity by a set coefficient;
+- `pollutant_immunity_reduction` - decreases immunity by a set coefficient;
 - `pollutant_exposure_poly` - describes pollutant polygon coordinates.
 
 Example:
 
 ```toml
-pollutant_beta_penalty = 0.00
+pollutant_immunity_reduction = 0.00
 pollutant_exposure_poly = [[25, 25], [25, 50], [50, 50], [50, 25]]
 ```
 
 At Agent initialization stage, coordinates are checked for being within polluted area. If so,
-an `exposed_to_pollutant` flag is set to `True` and `pollutant_beta_penalty` is applied at immunity checks.
+an `exposed_to_pollutant` flag is set to `True` and `pollutant_immunity_reduction` is applied at immunity checks.
 
 ![Polluted Area.png](docs%2Fimg%2Fpolygons%2FPolluted%20Area.png)
 

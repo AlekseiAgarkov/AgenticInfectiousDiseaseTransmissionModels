@@ -96,7 +96,7 @@ def configure_extended_neighbors_simulation(
     if pathogen_config:
         pathogen_initialized = init_pathogen_from_config(env=environment, config_data=pathogen_config)
 
-    pollutant_beta_penalty = pollutants_config.get('pollutant_beta_penalty', 0.0)
+    pollutant_immunity_reduction = pollutants_config.get('pollutant_immunity_reduction', 0.0)
     pollutant_exposure_poly: Optional[List] = pollutants_config.get('pollutant_exposure_poly', None)
     pollutant_exposure_poly = mpl_path.Path(pollutant_exposure_poly) if pollutant_exposure_poly else None
 
@@ -133,7 +133,7 @@ def configure_extended_neighbors_simulation(
             x=x,
             y=y,
             exposed_to_pollutant=exposed_to_pollutant,
-            pollutant_beta_penalty=pollutant_beta_penalty)
+            pollutant_immunity_reduction=pollutant_immunity_reduction)
 
     log.info("Linking Neighbors")
     for i, a in tqdm(agents.items()):
