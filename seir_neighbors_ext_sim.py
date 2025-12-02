@@ -12,7 +12,7 @@ import pandas as pd
 import simpy
 
 from metrics.collector import Metric
-from models.seir import SEIRNeighborsFSMAgent
+from models.seir import SEIRNeighborsFSMExtended
 from models.simulation import configure_extended_neighbors_simulation
 from simulation_utils.logging import configure_logging
 from simulation_utils.time import msk_now, DATETIME_FORMAT
@@ -142,7 +142,7 @@ if __name__ == '__main__':
     simulation_params['simulation_start'] = simulation_start_str
     simulation_params['simulation_end'] = simulation_end_str
     simulation_params['simulation_duration_seconds'] = elapsed
-    simulation_params['agent_class'] = SEIRNeighborsFSMAgent.__name__
+    simulation_params['agent_class'] = SEIRNeighborsFSMExtended.__name__
     simulation_params['scenario_name'] = config['title']
 
     transitions_path = f"{OUTPUT_PATH}/{SIMULATOR_NAME}_Transitions-{simulation_end_str}.csv"
