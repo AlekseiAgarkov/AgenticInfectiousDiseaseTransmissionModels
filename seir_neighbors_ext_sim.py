@@ -25,6 +25,7 @@ if __name__ == '__main__':
                        help="Config path")
     paths.add_argument('--neighbors_data_path', type=str, nargs="?", default=None,
                        help="Path to Neighbors Data")
+    paths.add_argument('--id', type=str, nargs="?", default=None, help="Simulation ID")
 
     simulation_params = p.add_argument_group("simulation_params")
     simulation_params.add_argument('-r', '--random_seed', type=int, nargs="?", help="Random seed")
@@ -96,9 +97,10 @@ if __name__ == '__main__':
         "immunity_reduction_factors": config['age'].get('immunity_reduction_factors'),
     }
 
+    SIM_ID = f"-{args.id}" if args.id else ""
     SIM_DURATION: int = args.sim_duration or config['simulation']['sim_duration']
     OUTPUT_PATH: str = args.output_path or config['paths']['output_path']
-    LOG_OUTPUT: str = f'{config['paths']['log_output']}/{SIMULATOR_NAME}_Log-{simulation_start_str}.log'
+    LOG_OUTPUT: str = f'{config['paths']['log_output']}/{SIMULATOR_NAME}_Log-{simulation_start_str}{SIM_ID}.log'
 
     PATHOGEN_CONFIG = config.get('pathogens', {}).get(config['simulation'].get('pathogen'), {})
     # add sim duration for duration-bound pathogens
@@ -158,8 +160,8 @@ if __name__ == '__main__':
     simulation_params['agent_class'] = SEIRNeighborsFSMExtended.__name__
     simulation_params['scenario_name'] = config['title']
 
-    transitions_path = f"{OUTPUT_PATH}/{SIMULATOR_NAME}_Transitions-{simulation_end_str}.csv"
-    params_path = f"{OUTPUT_PATH}/{SIMULATOR_NAME}_Params-{simulation_end_str}.json"
+    transitions_path = f"{OUTPUT_PATH}/{SIMULATOR_NAME}_Transitions-{simulation_end_str}{SIM_ID}.csv"
+    params_path = f"{OUTPUT_PATH}/{SIMULATOR_NAME}_Params-{simulation_end_str}{SIM_ID}.json"
 
     log.info(f'Simulation has finished. Elapsed time {elapsed} seconds')
     log.info(f"Saving transitions to {transitions_path}")
