@@ -40,6 +40,12 @@ if __name__ == '__main__':
     agent_params.add_argument('--t1', type=float, nargs="?", help="Min Infected State Duration")
     agent_params.add_argument('--t2', type=float, nargs="?", help="Max Infected State Duration")
 
+    agent_params = p.add_argument_group("pollutants")
+    agent_params.add_argument('--pollutant_immunity_reduction',
+                              type=float,
+                              default=0.0,
+                              help="Pollutant immunity reduction coefficient")
+
     args = p.parse_args()
     config = None
     if args.config_path is not None:
@@ -99,7 +105,14 @@ if __name__ == '__main__':
     if PATHOGEN_CONFIG:
         PATHOGEN_CONFIG['sim_duration'] = SIM_DURATION
 
-    POLLUTANTS_CONFIG = config.get('pollutants', {})
+    POLLUTANT_IMMUNITY_REDUCTION = (
+            args.pollutant_immunity_reduction or config.get('pollutants', {}).get("pollutant_immunity_reduction",
+                                                                                  0.0))
+    POLLUTANT_EXPOSURE_POLY = config.get('pollutants', {}).get("pollutant_exposure_poly", [])
+    POLLUTANTS_CONFIG = {
+        "pollutant_immunity_reduction": POLLUTANT_IMMUNITY_REDUCTION,
+        "pollutant_exposure_poly": POLLUTANT_EXPOSURE_POLY
+    }
 
     simulation_params = {
         "random_seed": RANDOM_SEED,
