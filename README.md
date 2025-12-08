@@ -344,7 +344,7 @@ Assigns name of the output file according to the `NeighborsMap-<s>by<s>-Agents<a
 - `s` - length of 2D plane square side;
 - `a` - number of agents to generate;
 - `n` - number of neighbors any agent has. Number also includes agent itself, so number of neighbors is
-  effectively `n-`.
+  effectively `n-1`.
 
 Resulting 2D plane with agents distributed and neighbors assigned is as follows
 (with arbitrary agent in red and its neighbors in blue):
