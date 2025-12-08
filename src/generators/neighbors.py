@@ -31,11 +31,13 @@ if __name__ == '__main__':
     y_coords = np.random.uniform(low=min_coord, high=max_coord, size=agents_number).round(decimals=2)
     coords = np.column_stack((x_coords, y_coords))
 
-    n_neighbors = args.neighbors
+    n_neighbors = args.neighbors + 1
     nbrs = NearestNeighbors(n_neighbors=n_neighbors, algorithm='ball_tree').fit(coords)
     distances, neighbors = nbrs.kneighbors(coords)
     neighbors_df = pd.DataFrame(data=coords, columns=['x', 'y'])
     neighbors_df['neighbors'] = neighbors[:, 1:].tolist()
 
     generation_ts_str = msk_now_str()
-    neighbors_df.to_csv(f"{args.output_path}/NeighborsMap-{args.size}by{args.size}-Agents{args.agents_number}-Neighbors{args.neighbors}-{generation_ts_str}.csv", index=False)
+    neighbors_df.to_csv(
+        f"{args.output_path}/NeighborsMap-{args.size}by{args.size}-Agents{args.agents_number}-Neighbors{args.neighbors}-{generation_ts_str}.csv",
+        index=False)
