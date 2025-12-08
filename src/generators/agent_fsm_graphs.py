@@ -16,7 +16,7 @@ if __name__ == '__main__':
     generate_graph(sir_basic_fsm_agent, path=f"docs/img/{SIRBasicFSMAgent.__name__}.png")
 
     seir_basic_fsm_agent = SEIRClassicFSMAgent(env=env, name="", beta=0.01, gamma=0.01, sigma=0.11, sim_duration=100)
-    generate_graph(sir_basic_fsm_agent, path=f"docs/img/{SEIRClassicFSMAgent.__name__}.png")
+    generate_graph(seir_basic_fsm_agent, path=f"docs/img/{SEIRClassicFSMAgent.__name__}.png")
 
     metrics_collector = TransitionMetricsCollector()
 
@@ -40,5 +40,5 @@ if __name__ == '__main__':
         x=0.01, y=0.01,
         e1=1, e2=5,
         t1=5, t2=7,
-        immunity=1.0)
+        age=42)
     generate_graph(seir_neighbors_fsm_extended_agent, path=f"docs/img/{SEIRNeighborsFSMExtended.__name__}.png")
