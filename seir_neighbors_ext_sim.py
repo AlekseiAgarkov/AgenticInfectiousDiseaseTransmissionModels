@@ -33,6 +33,12 @@ if __name__ == '__main__':
     simulation_params.add_argument('-t', '--sim_duration', type=int, nargs="?", help="Duration of Simulation, units")
     simulation_params.add_argument('-i', '--initially_infected', type=int, nargs="?",
                                    help="Number of initially infected")
+    simulation_params.add_argument('--lowest_immunity', type=float, nargs="?",
+                                   help="Lowest immunity bound")
+    simulation_params.add_argument('--highest_immunity', type=float, nargs="?",
+                                   help="Highest immunity bound")
+    simulation_params.add_argument('--mask_beta_penalty', type=float, nargs="?",
+                                   help="Mask wearing penalty for Beta")
 
     agent_params = p.add_argument_group("agent_params")
     agent_params.add_argument('-b', '--beta', type=float, nargs="?", help="Model parameter Beta")
@@ -75,9 +81,9 @@ if __name__ == '__main__':
     INITIALLY_INFECTED: int = args.initially_infected or config['simulation']['initially_infected']
     INITIALLY_INFECTED_INDICES: List[int] = config['simulation'].get('initially_infected_indices')
 
-    LOWEST_IMMUNITY: float = config['immunity'].get('lowest_immunity')
-    HIGHEST_IMMUNITY: float = config['immunity'].get('highest_immunity')
-    MASK_BETA_PENALTY: float = config['immunity'].get('mask_beta_penalty')
+    LOWEST_IMMUNITY: float = args.lowest_immunity or config['immunity'].get('lowest_immunity')
+    HIGHEST_IMMUNITY: float = args.highest_immunity or config['immunity'].get('highest_immunity')
+    MASK_BETA_PENALTY: float = args.mask_beta_penalty or config['immunity'].get('mask_beta_penalty')
     MASK_DISCIPLINE_WORST: float = config['immunity'].get('mask_discipline_worst')
     MASK_DISCIPLINE_BEST: float = config['immunity'].get('mask_discipline_best')
 

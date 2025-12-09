@@ -315,6 +315,9 @@ Simulation Parameters:
 * `-n`, `--n_agents` - Number of agents
 * `-t`, `--sim_duration` - Duration of Simulation, units
 * `-i`, `--initially_infected` - Number of initially infected agents
+* `--lowest_immunity` - Lowest immunity bound
+* `--highest_immunity` - Highest immunity bound
+* `--mask_beta_penalty` - Mask wearing penalty for Beta
 
 Agent Parameters:
 
