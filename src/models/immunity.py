@@ -59,9 +59,9 @@ def adjust_immunity_by_mid_proportional(lowest_immunity, highest_immunity, reduc
     mid_immunity_adj = mid_immunity - reduction_factor
 
     # Define bottom lowest bound, mid and upper bounds for immunity ranges sampling
-    bottom_lb = min([lowest_immunity, mid_immunity_adj])
+    bottom_lb = max(min([lowest_immunity, mid_immunity_adj]), 0)
     mid = max([lowest_immunity, mid_immunity_adj])
-    top_ub = max([mid_immunity_adj, highest_immunity - reduction_factor])
+    top_ub = min(max([mid_immunity_adj, highest_immunity - reduction_factor]), 1.0)
 
     # Sample low and high immunity range bounds
     low = round(np.random.uniform(low=bottom_lb, high=mid), 2)
