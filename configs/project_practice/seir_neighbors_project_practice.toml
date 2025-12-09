@@ -4,8 +4,8 @@ title = "SEIR Neighbors Scenario: Project Practice"
 name = 'SEIR_Neighbors_Project_Practice_Simulation'
 
 [paths]
-output_path = "simulation_data/project_practice"
-log_output = "simulation_logs/project_practice"
+output_path = "simulation_data/project_practice_20251210"
+log_output = "simulation_logs/project_practice_20251210"
 neighbors_data_path = "simulation_conditions_data/neighbors/NeighborsMap-100by100-Agents10000-Neighbors20-2025-10-07-005129Z.csv"
 
 [simulation]
@@ -13,7 +13,6 @@ random_seed = 42
 n_agents = 10000
 sim_duration = 365
 initially_infected = 5
-initially_infected_indices = [40, 101, 200, 300, 1050]
 
 [agents]
 beta = 0.03
