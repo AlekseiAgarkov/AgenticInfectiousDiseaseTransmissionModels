@@ -1,0 +1,5 @@
+*.ipynb linguist-documentation
+*.ipynb linguist-detectable=false
+*.ipynb linguist-vendored
+*.md linguist-documentation
+*.txt linguist-documentation
