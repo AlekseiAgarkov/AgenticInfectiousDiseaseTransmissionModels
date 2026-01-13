@@ -140,8 +140,7 @@ Extensions are implemented in `SEIRNeighborsFSMExtended`.
 #### Dynamic Immunity
 
 Dynamic immunity in `SEIRNeighborsFSMExtended` is modeled
-via [Pascal's Limaçon](https://en.wikipedia.org/wiki/Lima%C3%A7on) function,
-adjusted for the purposes of the agent setup.
+via [Pascal's Limaçon](https://en.wikipedia.org/wiki/Lima%C3%A7on) function, adjusted for the purposes of the agent setup.
 
 Immunity at a specific day of the year is implemented
 in [immunity_by_year_day](https://github.com/AlekseiAgarkov/AgenticInfectiousDiseaseTransmissionModels/blob/main/src%2Fmodels%2Fimmunity.py#L27)
